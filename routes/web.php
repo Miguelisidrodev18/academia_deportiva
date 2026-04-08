@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\DisciplinaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InscripcionController;
@@ -47,6 +48,18 @@ Route::middleware(['auth', 'tenant'])->group(function () {
 
     // Endpoint API: deuda del alumno (llamado por el frontend de pagos vía fetch)
     Route::get('alumnos/{alumno}/deuda', [PagoController::class, 'deuda'])->name('alumnos.deuda');
+
+    // ── Asistencia QR ──────────────────────────────────────────────────────────
+    // Vista del escáner QR (solo entrenadores y dueño)
+    Route::get('asistencia/escanear', [AsistenciaController::class, 'escanear'])->name('asistencia.escanear');
+    // Endpoint POST: recibe el QR escaneado y registra la asistencia (retorna JSON)
+    Route::post('asistencia/qr', [AsistenciaController::class, 'registrarQR'])->name('asistencia.registrar');
+    // Listado de asistencias del día con filtros
+    Route::get('asistencias', [AsistenciaController::class, 'index'])->name('asistencias.index');
+    // Marcar falta manualmente (JSON endpoint)
+    Route::post('asistencias/falta', [AsistenciaController::class, 'marcarFalta'])->name('asistencias.falta');
+    // Justificar una falta existente
+    Route::patch('asistencias/{asistencia}/justificar', [AsistenciaController::class, 'justificar'])->name('asistencias.justificar');
 
     // Perfil del usuario autenticado
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

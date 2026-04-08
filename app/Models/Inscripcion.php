@@ -45,12 +45,26 @@ class Inscripcion extends Model
     }
 
     /**
-     * Cuenta las faltas sin justificar.
+     * Cuenta las faltas sin justificar en los últimos 30 días.
      * Si llega a 3 → se genera alerta para el dueño.
      */
     public function faltasSinJustificar(): int
     {
-        return $this->asistencias()->where('estado', 'falta')->count();
+        return $this->asistencias()
+            ->where('estado', 'falta')
+            ->where('fecha', '>=', now()->subDays(30)->toDateString())
+            ->count();
+    }
+
+    /**
+     * Verifica si ya existe una asistencia registrada hoy para esta inscripción.
+     * Se usa para evitar duplicados al escanear el QR más de una vez el mismo día.
+     */
+    public function asistenciaHoy(): bool
+    {
+        return $this->asistencias()
+            ->where('fecha', now()->toDateString())
+            ->exists();
     }
 
     /**

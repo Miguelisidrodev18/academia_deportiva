@@ -31,6 +31,37 @@ class TallerController extends Controller
     }
 
     /**
+     * Detalle del taller con lista de alumnos inscriptos, faltas y asistencia de hoy.
+     */
+    public function show(Taller $taller): Response
+    {
+        $this->authorizar($taller);
+
+        $taller->load([
+            'disciplina:id,nombre',
+            'entrenador:id,name',
+            'inscripciones' => function ($q) {
+                $q->where('activo', true)
+                  ->with('alumno:id,nombre,dni')
+                  ->withCount([
+                      'asistencias as faltas_sin_justificar' => fn($q) =>
+                          $q->where('estado', 'falta')
+                            ->where('fecha', '>=', now()->subDays(30)->toDateString()),
+                  ]);
+            },
+        ]);
+
+        // Añadimos el campo asistencia_hoy a cada inscripción
+        $taller->inscripciones->each(function ($insc) {
+            $insc->asistencia_hoy = $insc->asistenciaHoy();
+        });
+
+        return Inertia::render('Talleres/Show', [
+            'taller' => $taller,
+        ]);
+    }
+
+    /**
      * Muestra el formulario para crear un nuevo taller.
      * Necesitamos pasar disciplinas y entrenadores disponibles.
      */
