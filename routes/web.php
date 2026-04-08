@@ -4,6 +4,7 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\DisciplinaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InscripcionController;
+use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TallerController;
 use Illuminate\Foundation\Application;
@@ -40,6 +41,12 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::resource('inscripciones', InscripcionController::class)
         ->only(['index', 'create', 'store', 'show', 'destroy'])
         ->parameters(['inscripciones' => 'inscripcion']);
+
+    // Pagos de cuotas
+    Route::resource('pagos', PagoController::class)->only(['index', 'create', 'store', 'show']);
+
+    // Endpoint API: deuda del alumno (llamado por el frontend de pagos vía fetch)
+    Route::get('alumnos/{alumno}/deuda', [PagoController::class, 'deuda'])->name('alumnos.deuda');
 
     // Perfil del usuario autenticado
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

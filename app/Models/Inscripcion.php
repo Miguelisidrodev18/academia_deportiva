@@ -59,11 +59,36 @@ class Inscripcion extends Model
      */
     public function tieneDeudasExcesivas(): bool
     {
-        // Cantidad de meses desde la inscripción
         $mesesTranscurridos = $this->fecha_alta->diffInMonths(now());
         $pagosRealizados    = $this->pagos()->count();
         $cuotasAtrasadas    = $mesesTranscurridos - $pagosRealizados;
 
         return $cuotasAtrasadas > 2;
+    }
+
+    /**
+     * Calcula la deuda actual de esta inscripción en pesos.
+     *
+     * Fórmula: (meses desde fecha_alta hasta hoy) * precio_taller - total_pagado
+     *
+     * Nota: usamos el precio_base del taller sin descuento en este método básico.
+     * Para aplicar descuentos multi-taller/hermanos, el controlador usa CuotaService
+     * y pasa el precio_final correspondiente.
+     */
+    public function deudaActual(float $precioFinal = null): float
+    {
+        // Si no se pasa precio_final, usamos el precio_base del taller
+        $precio = $precioFinal ?? (float) $this->taller->precio_base;
+
+        // Meses completos transcurridos desde la fecha de alta (mínimo 1)
+        $meses = max(1, $this->fecha_alta->diffInMonths(now()));
+
+        // Total que debería haber pagado hasta ahora
+        $totalEsperado = $meses * $precio;
+
+        // Total que efectivamente pagó
+        $totalPagado = (float) $this->pagos()->sum('monto');
+
+        return max(0, round($totalEsperado - $totalPagado, 2));
     }
 }

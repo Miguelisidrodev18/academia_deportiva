@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Alumno extends Model
 {
     protected $fillable = [
-        'academia_id', 'user_id', 'nombre', 'fecha_nacimiento',
+        'academia_id', 'user_id', 'nombre', 'apellido_familiar', 'fecha_nacimiento',
         'dni', 'direccion', 'telefono', 'foto',
     ];
 
@@ -51,5 +51,17 @@ class Alumno extends Model
     public function inscripcionesActivas(): HasMany
     {
         return $this->hasMany(Inscripcion::class)->where('activo', true);
+    }
+
+    /**
+     * Calcula la deuda total del alumno sumando la deuda de cada inscripción activa.
+     * Útil para mostrar en el listado de alumnos y en el dashboard de alertas.
+     */
+    public function deudaTotal(): float
+    {
+        return $this->inscripcionesActivas()
+            ->with(['taller', 'pagos'])
+            ->get()
+            ->sum(fn($inscripcion) => $inscripcion->deudaActual());
     }
 }
