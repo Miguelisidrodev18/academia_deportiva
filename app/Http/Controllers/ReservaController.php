@@ -97,10 +97,6 @@ class ReservaController extends Controller
             'cliente_dni'      => 'nullable|string|max:15',
             'cliente_telefono' => 'nullable|string|max:20',
             'monto_pagado'     => 'required|numeric|min:0',
-            // equipamiento a reservar: [{id, cantidad_reservada}]
-            'equipamiento'     => 'nullable|array',
-            'equipamiento.*.id'                => 'required|integer',
-            'equipamiento.*.cantidad_reservada'=> 'required|integer|min:1',
         ]);
 
         // Verificar que el espacio pertenece a la academia
@@ -125,18 +121,6 @@ class ReservaController extends Controller
             'estado'           => 'confirmada',
         ]);
 
-        // Adjuntar equipamiento al pivot
-        if (!empty($data['equipamiento'])) {
-            $pivot = [];
-            foreach ($data['equipamiento'] as $item) {
-                $pivot[$item['id']] = [
-                    'cantidad_reservada' => $item['cantidad_reservada'],
-                    'cantidad_devuelta'  => 0,
-                ];
-            }
-            $reserva->equipamientos()->attach($pivot);
-        }
-
         return redirect()->route('reservas.show', $reserva->id)
             ->with('success', 'Reserva confirmada correctamente.');
     }
@@ -145,12 +129,9 @@ class ReservaController extends Controller
 
     public function show(Reserva $reserva): Response
     {
-        $user = auth()->user();
-        abort_unless($user->esDueno() || $user->rol === 'admin_alquiler', 403);
-        abort_if($reserva->espacio->academia_id !== $user->academia_id, 403);
+        $this->authorizeReserva($reserva);
 
         $reserva->load([
-            'espacio:id,nombre,equipamiento_base',
             'rangoHorario:id,dia_semana,hora_inicio,hora_fin,precio',
             'alumno:id,nombre,dni',
             'equipamientos',
@@ -165,12 +146,9 @@ class ReservaController extends Controller
 
     public function devolucion(Reserva $reserva): Response
     {
-        $user = auth()->user();
-        abort_unless($user->esDueno() || $user->rol === 'admin_alquiler', 403);
-        abort_if($reserva->espacio->academia_id !== $user->academia_id, 403);
+        $this->authorizeReserva($reserva);
 
         $reserva->load([
-            'espacio:id,nombre',
             'rangoHorario:id,hora_inicio,hora_fin',
             'alumno:id,nombre,dni',
             'equipamientos',
@@ -185,9 +163,7 @@ class ReservaController extends Controller
 
     public function updateDevolucion(Request $request, Reserva $reserva): RedirectResponse
     {
-        $user = auth()->user();
-        abort_unless($user->esDueno() || $user->rol === 'admin_alquiler', 403);
-        abort_if($reserva->espacio->academia_id !== $user->academia_id, 403);
+        $this->authorizeReserva($reserva);
 
         $data = $request->validate([
             'equipamiento'                      => 'required|array',
@@ -219,9 +195,7 @@ class ReservaController extends Controller
 
     public function destroy(Reserva $reserva): RedirectResponse
     {
-        $user = auth()->user();
-        abort_unless($user->esDueno() || $user->rol === 'admin_alquiler', 403);
-        abort_if($reserva->espacio->academia_id !== $user->academia_id, 403);
+        $this->authorizeReserva($reserva);
 
         if ($reserva->estado !== 'confirmada') {
             return back()->withErrors(['reserva' => 'Solo se pueden cancelar reservas confirmadas.']);
@@ -231,6 +205,21 @@ class ReservaController extends Controller
 
         return redirect()->route('reservas.index')
             ->with('success', 'Reserva cancelada.');
+    }
+
+    // ─── Helper: verificar acceso a la reserva ────────────────────────────────
+
+    private function authorizeReserva(Reserva $reserva): void
+    {
+        $user = auth()->user();
+        abort_unless($user->esDueno() || $user->rol === 'admin_alquiler', 403);
+
+        // Carga espacio con academia_id si aún no está en memoria
+        if (!$reserva->relationLoaded('espacio')) {
+            $reserva->load('espacio:id,nombre,equipamiento_base,academia_id');
+        }
+
+        abort_if($reserva->espacio->academia_id !== $user->academia_id, 403);
     }
 
     // ─── API: horarios disponibles (fetch desde el form) ─────────────────────

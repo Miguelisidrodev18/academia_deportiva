@@ -136,7 +136,7 @@ class EspacioController extends Controller
         $rangoIds = collect($data['rangos_horarios'] ?? [])->pluck('id')->filter();
         $espacio->rangosHorarios()
             ->whereNotIn('id', $rangoIds)
-            ->whereDoesntHave('reservas', fn($q) => $q->whereIn('estado', ['confirmada', 'pendiente']))
+            ->whereDoesntHave('reservas', fn($q) => $q->where('estado', 'confirmada'))
             ->delete();
 
         foreach ($data['rangos_horarios'] ?? [] as $rango) {
@@ -172,7 +172,7 @@ class EspacioController extends Controller
 
         // No eliminar si tiene reservas activas
         $tieneReservasActivas = $espacio->reservas()
-            ->whereIn('estado', ['confirmada', 'pendiente'])
+            ->where('estado', 'confirmada')
             ->exists();
 
         if ($tieneReservasActivas) {

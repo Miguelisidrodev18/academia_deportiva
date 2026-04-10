@@ -25,9 +25,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'tenant'])->group(function () {
 
     // Dashboard principal
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // CRUD de disciplinas deportivas
     Route::resource('disciplinas', DisciplinaController::class);

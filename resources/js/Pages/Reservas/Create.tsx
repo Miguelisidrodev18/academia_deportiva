@@ -1,6 +1,8 @@
-import { useForm, Link, router } from '@inertiajs/react';
-import { useState, useEffect, useRef } from 'react';
+import { useForm, Link } from '@inertiajs/react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import AppLayout from '@/Layouts/AppLayout';
+import { DIA_NUM_LABEL } from '@/utils/talleres';
+import { csrfToken } from '@/utils/ui';
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -18,7 +20,7 @@ interface RangoHorario {
     hora_inicio: string;
     hora_fin: string;
     precio: string;
-    disponible: boolean; // true = libre ese día
+    disponible: boolean;
 }
 
 interface Alumno {
@@ -34,20 +36,13 @@ interface Props {
     espacioId: number | null;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const DIA_LABEL: Record<number, string> = { 1:'Lun', 2:'Mar', 3:'Mié', 4:'Jue', 5:'Vie', 6:'Sáb', 7:'Dom' };
-
 // ─── Componente ───────────────────────────────────────────────────────────────
 
 export default function ReservasCreate({ espacios, rangoDisponibles, fecha, espacioId }: Props) {
-    // Paso actual del wizard (1=espacio+fecha, 2=horario, 3=cliente+pago)
     const [paso, setPaso] = useState(espacioId ? 2 : 1);
-
     const [rangos, setRangos] = useState<RangoHorario[]>(rangoDisponibles);
     const [cargandoRangos, setCargandoRangos] = useState(false);
 
-    // Autocomplete de alumnos
     const [busqueda, setBusqueda] = useState('');
     const [sugerencias, setSugerencias] = useState<Alumno[]>([]);
     const [alumnoSel, setAlumnoSel] = useState<Alumno | null>(null);
@@ -63,57 +58,52 @@ export default function ReservasCreate({ espacios, rangoDisponibles, fecha, espa
         cliente_dni:      '',
         cliente_telefono: '',
         monto_pagado:     '',
-        equipamiento:     [] as { id: number; nombre: string; cantidad_reservada: number; max: number }[],
     });
 
-    // Espacio seleccionado actualmente
-    const espacioActual = espacios.find(e => String(e.id) === data.espacio_id) ?? null;
+    const espacioActual = useMemo(
+        () => espacios.find(e => String(e.id) === data.espacio_id) ?? null,
+        [espacios, data.espacio_id],
+    );
 
-    // Cuando cambia espacio o fecha → cargar rangos disponibles vía fetch
-    async function cargarRangos(espacioId: string, fecha: string) {
-        if (!espacioId) return;
+    const rangoSel = useMemo(
+        () => rangos.find(r => String(r.id) === data.rango_horario_id) ?? null,
+        [rangos, data.rango_horario_id],
+    );
+
+    const cargarRangos = useCallback(async (eid: string, f: string) => {
+        if (!eid) return;
         setCargandoRangos(true);
         try {
-            const csrf = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '';
-            const res = await fetch(route('reservas.horarios') + `?espacio_id=${espacioId}&fecha=${fecha}`, {
-                headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf },
+            const res = await fetch(route('reservas.horarios') + `?espacio_id=${eid}&fecha=${f}`, {
+                headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken() },
             });
             if (res.ok) setRangos(await res.json());
         } finally {
             setCargandoRangos(false);
         }
-    }
+    }, []);
 
     useEffect(() => {
         if (data.espacio_id && data.fecha_reserva) {
             cargarRangos(data.espacio_id, data.fecha_reserva);
         }
-    }, [data.espacio_id, data.fecha_reserva]);
+    }, [data.espacio_id, data.fecha_reserva, cargarRangos]);
 
-    // Inicializar equipamiento cuando se selecciona el rango y espacio
     function seleccionarRango(rangoId: string) {
         setData(d => ({
             ...d,
             rango_horario_id: rangoId,
             monto_pagado: rangos.find(r => String(r.id) === rangoId)?.precio ?? d.monto_pagado,
-            equipamiento: (espacioActual?.equipamiento_base ?? []).map((eq, i) => ({
-                id: i, // no tiene ID real de BD, es del JSON
-                nombre: eq.nombre,
-                cantidad_reservada: 0,
-                max: eq.cantidad,
-            })),
         }));
     }
 
-    // Buscar alumnos con debounce
     useEffect(() => {
         if (data.tipo_cliente !== 'alumno') return;
         if (debounceRef.current) clearTimeout(debounceRef.current);
         if (busqueda.length < 2) { setSugerencias([]); return; }
         debounceRef.current = setTimeout(async () => {
-            const csrf = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content ?? '';
             const res = await fetch(route('alumnos.buscar') + `?q=${encodeURIComponent(busqueda)}`, {
-                headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrf },
+                headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken() },
             });
             if (res.ok) setSugerencias(await res.json());
         }, 300);
@@ -126,22 +116,10 @@ export default function ReservasCreate({ espacios, rangoDisponibles, fecha, espa
         setSugerencias([]);
     }
 
-    function actualizarCantEquip(idx: number, val: number) {
-        const u = [...data.equipamiento];
-        u[idx] = { ...u[idx], cantidad_reservada: Math.min(Math.max(0, val), u[idx].max) };
-        setData('equipamiento', u);
-    }
-
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        // Filtrar equipamiento con cantidad > 0 y usar índice como ID (se interpreta en backend por nombre)
-        const equipFiltrado = data.equipamiento
-            .filter(eq => eq.cantidad_reservada > 0)
-            .map(eq => ({ id: eq.id, cantidad_reservada: eq.cantidad_reservada }));
         post(route('reservas.store'));
     }
-
-    const rangoSel = rangos.find(r => String(r.id) === data.rango_horario_id) ?? null;
 
     return (
         <AppLayout title="Nueva Reserva">
@@ -195,9 +173,14 @@ export default function ReservasCreate({ espacios, rangoDisponibles, fecha, espa
                             </div>
 
                             {espacioActual && (
-                                <div className="bg-orange-50 border border-orange-100 rounded-lg p-3 text-xs text-orange-800">
-                                    <p className="font-medium mb-1">{espacioActual.nombre}</p>
+                                <div className="bg-orange-50 border border-orange-100 rounded-lg p-3 text-xs text-orange-800 space-y-1">
+                                    <p className="font-medium">{espacioActual.nombre}</p>
                                     {espacioActual.descripcion && <p className="text-orange-700">{espacioActual.descripcion}</p>}
+                                    {espacioActual.equipamiento_base.length > 0 && (
+                                        <p className="text-orange-600">
+                                            Equipamiento: {espacioActual.equipamiento_base.map(eq => `${eq.nombre} (×${eq.cantidad})`).join(', ')}
+                                        </p>
+                                    )}
                                 </div>
                             )}
 
@@ -245,7 +228,7 @@ export default function ReservasCreate({ espacios, rangoDisponibles, fecha, espa
                                                         : 'border-gray-100 bg-gray-50 text-muted cursor-not-allowed opacity-60'
                                             }`}
                                         >
-                                            <span>{DIA_LABEL[rango.dia_semana]} {rango.hora_inicio} – {rango.hora_fin}</span>
+                                            <span>{DIA_NUM_LABEL[rango.dia_semana]} {rango.hora_inicio} – {rango.hora_fin}</span>
                                             <div className="flex items-center gap-3">
                                                 <span className="font-semibold">${parseFloat(rango.precio).toLocaleString('es-AR')}</span>
                                                 <span className={`text-xs px-2 py-0.5 rounded-full ${rango.disponible ? 'bg-green-100 text-success' : 'bg-red-100 text-danger'}`}>
@@ -299,7 +282,6 @@ export default function ReservasCreate({ espacios, rangoDisponibles, fecha, espa
                                 </div>
 
                                 {data.tipo_cliente === 'alumno' ? (
-                                    /* Autocomplete de alumnos */
                                     <div className="relative">
                                         <label className="block text-sm font-medium text-secondary mb-1">Buscar alumno</label>
                                         <input type="text" value={busqueda}
@@ -324,7 +306,6 @@ export default function ReservasCreate({ espacios, rangoDisponibles, fecha, espa
                                         )}
                                     </div>
                                 ) : (
-                                    /* Cliente externo */
                                     <div className="space-y-3">
                                         <div>
                                             <label className="block text-sm font-medium text-secondary mb-1">Nombre <span className="text-danger">*</span></label>
@@ -363,27 +344,6 @@ export default function ReservasCreate({ espacios, rangoDisponibles, fecha, espa
                                         <p className="text-xs text-muted mt-1">Precio del rango: ${parseFloat(rangoSel.precio).toLocaleString('es-AR')}</p>
                                     )}
                                 </div>
-
-                                {/* Equipamiento a reservar */}
-                                {data.equipamiento.length > 0 && (
-                                    <div>
-                                        <label className="block text-sm font-medium text-secondary mb-2">Equipamiento a usar</label>
-                                        <div className="space-y-2">
-                                            {data.equipamiento.map((eq, i) => (
-                                                <div key={i} className="flex items-center justify-between text-sm">
-                                                    <span className="text-secondary">{eq.nombre}</span>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-xs text-muted">máx {eq.max}</span>
-                                                        <input type="number" min={0} max={eq.max}
-                                                            value={eq.cantidad_reservada}
-                                                            onChange={e => actualizarCantEquip(i, parseInt(e.target.value) || 0)}
-                                                            className="w-14 border border-gray-300 rounded px-2 py-1 text-xs text-center focus:outline-none focus:ring-1 focus:ring-primary" />
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
                             </div>
 
                             {/* Botón confirmar */}
