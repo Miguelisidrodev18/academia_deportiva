@@ -36,9 +36,9 @@ class TallerHorarioTest extends TestCase
     private function makeTaller(string $diaSemana, string $horaInicio, string $horaFin): Taller
     {
         $taller = new Taller();
-        // Asignamos atributos directamente en el array interno
+        // dias_semana ahora es un array JSON (admite múltiples días)
         $taller->forceFill([
-            'dia_semana'  => $diaSemana,
+            'dias_semana' => [$diaSemana],
             'hora_inicio' => $horaInicio,
             'hora_fin'    => $horaFin,
         ]);

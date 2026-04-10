@@ -1,5 +1,6 @@
 import { useForm, Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
+import { DIAS, DIA_LABEL } from '@/utils/talleres';
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -21,7 +22,7 @@ export default function TalleresCreate({ disciplinas, entrenadores }: Props) {
         rango_edad_max: '',
         nivel:          'inicial',
         precio_base:    '',
-        dia_semana:     'lunes',
+        dias_semana:    [] as string[],
         hora_inicio:    '',
         hora_fin:       '',
         entrenador_id:  '',
@@ -31,6 +32,45 @@ export default function TalleresCreate({ disciplinas, entrenadores }: Props) {
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         post(route('talleres.store'));
+    }
+
+    function toggleDia(dia: string) {
+        setData('dias_semana',
+            data.dias_semana.includes(dia)
+                ? data.dias_semana.filter(d => d !== dia)
+                : [...data.dias_semana, dia]
+        );
+    }
+
+    // Guardia: si no hay disciplinas, mostrar callout
+    if (disciplinas.length === 0) {
+        return (
+            <AppLayout title="Nuevo Taller">
+                <div className="max-w-2xl mx-auto">
+                    <div className="mb-6">
+                        <Link href={route('talleres.index')} className="text-muted text-sm hover:text-secondary">
+                            ← Volver a Talleres
+                        </Link>
+                        <h1 className="text-2xl font-bold text-secondary mt-2">Nuevo Taller</h1>
+                    </div>
+                    <div className="bg-orange-50 border border-orange-200 rounded-xl p-8 text-center">
+                        <p className="text-4xl mb-3">⚠️</p>
+                        <h3 className="font-semibold text-secondary text-lg mb-2">
+                            No hay disciplinas creadas
+                        </h3>
+                        <p className="text-sm text-muted mb-5">
+                            Necesitás al menos una disciplina antes de crear un taller.
+                        </p>
+                        <Link
+                            href={route('disciplinas.create')}
+                            className="inline-block bg-primary text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors"
+                        >
+                            Crear primera disciplina →
+                        </Link>
+                    </div>
+                </div>
+            </AppLayout>
+        );
     }
 
     return (
@@ -117,19 +157,45 @@ export default function TalleresCreate({ disciplinas, entrenadores }: Props) {
                             </Field>
                         </div>
 
-                        {/* Día y horario */}
-                        <div className="grid grid-cols-3 gap-4">
-                            <Field label="Día de la semana" error={errors.dia_semana} required>
-                                <select
-                                    value={data.dia_semana}
-                                    onChange={e => setData('dia_semana', e.target.value)}
-                                    className={selectCls(!!errors.dia_semana)}
-                                >
-                                    {['lunes','martes','miercoles','jueves','viernes','sabado','domingo'].map(d => (
-                                        <option key={d} value={d}>{d.charAt(0).toUpperCase() + d.slice(1)}</option>
-                                    ))}
-                                </select>
-                            </Field>
+                        {/* Días de clase – multi-select pills */}
+                        <div>
+                            <label className="block text-sm font-medium text-secondary mb-2">
+                                Días de clase <span className="text-danger">*</span>
+                            </label>
+                            <div className="flex flex-wrap gap-2">
+                                {DIAS.map(dia => {
+                                    const activo = data.dias_semana.includes(dia);
+                                    return (
+                                        <button
+                                            key={dia}
+                                            type="button"
+                                            onClick={() => toggleDia(dia)}
+                                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                                                activo
+                                                    ? 'bg-primary text-white border-primary shadow-sm'
+                                                    : 'bg-white text-secondary border-gray-300 hover:border-primary hover:text-primary'
+                                            }`}
+                                        >
+                                            {DIA_LABEL[dia]}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {errors.dias_semana && (
+                                <p className="text-danger text-xs mt-1">{errors.dias_semana}</p>
+                            )}
+                            {data.dias_semana.length === 0 && !errors.dias_semana && (
+                                <p className="text-xs text-muted mt-1">Seleccioná al menos un día.</p>
+                            )}
+                            {data.dias_semana.length > 0 && (
+                                <p className="text-xs text-muted mt-1">
+                                    Seleccionados: {data.dias_semana.map(d => DIA_LABEL[d]).join(', ')}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Horario */}
+                        <div className="grid grid-cols-2 gap-4">
                             <Field label="Hora inicio" error={errors.hora_inicio} required>
                                 <input
                                     type="time"

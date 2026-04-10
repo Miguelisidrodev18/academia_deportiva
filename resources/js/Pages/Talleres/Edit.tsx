@@ -1,5 +1,6 @@
 import { useForm, Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
+import { DIAS, DIA_LABEL } from '@/utils/talleres';
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -14,7 +15,7 @@ interface Taller {
     rango_edad_max: number;
     nivel: string;
     precio_base: string;
-    dia_semana: string;
+    dias_semana: string[];
     hora_inicio: string;
     hora_fin: string;
     entrenador_id: number | null;
@@ -37,7 +38,7 @@ export default function TalleresEdit({ taller, disciplinas, entrenadores }: Prop
         rango_edad_max: String(taller.rango_edad_max),
         nivel:          taller.nivel,
         precio_base:    taller.precio_base,
-        dia_semana:     taller.dia_semana,
+        dias_semana:    Array.isArray(taller.dias_semana) ? taller.dias_semana : [] as string[],
         hora_inicio:    taller.hora_inicio,
         hora_fin:       taller.hora_fin,
         entrenador_id:  taller.entrenador_id ? String(taller.entrenador_id) : '',
@@ -47,6 +48,14 @@ export default function TalleresEdit({ taller, disciplinas, entrenadores }: Prop
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         put(route('talleres.update', taller.id));
+    }
+
+    function toggleDia(dia: string) {
+        setData('dias_semana',
+            data.dias_semana.includes(dia)
+                ? data.dias_semana.filter(d => d !== dia)
+                : [...data.dias_semana, dia]
+        );
     }
 
     return (
@@ -96,14 +105,44 @@ export default function TalleresEdit({ taller, disciplinas, entrenadores }: Prop
                             </Field>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4">
-                            <Field label="Día de la semana" error={errors.dia_semana} required>
-                                <select value={data.dia_semana} onChange={e => setData('dia_semana', e.target.value)} className={selectCls(!!errors.dia_semana)}>
-                                    {['lunes','martes','miercoles','jueves','viernes','sabado','domingo'].map(d => (
-                                        <option key={d} value={d}>{d.charAt(0).toUpperCase() + d.slice(1)}</option>
-                                    ))}
-                                </select>
-                            </Field>
+                        {/* Días de clase – multi-select pills */}
+                        <div>
+                            <label className="block text-sm font-medium text-secondary mb-2">
+                                Días de clase <span className="text-danger">*</span>
+                            </label>
+                            <div className="flex flex-wrap gap-2">
+                                {DIAS.map(dia => {
+                                    const activo = data.dias_semana.includes(dia);
+                                    return (
+                                        <button
+                                            key={dia}
+                                            type="button"
+                                            onClick={() => toggleDia(dia)}
+                                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                                                activo
+                                                    ? 'bg-primary text-white border-primary shadow-sm'
+                                                    : 'bg-white text-secondary border-gray-300 hover:border-primary hover:text-primary'
+                                            }`}
+                                        >
+                                            {DIA_LABEL[dia]}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {errors.dias_semana && (
+                                <p className="text-danger text-xs mt-1">{errors.dias_semana}</p>
+                            )}
+                            {data.dias_semana.length === 0 && !errors.dias_semana && (
+                                <p className="text-xs text-muted mt-1">Seleccioná al menos un día.</p>
+                            )}
+                            {data.dias_semana.length > 0 && (
+                                <p className="text-xs text-muted mt-1">
+                                    Seleccionados: {data.dias_semana.map(d => DIA_LABEL[d]).join(', ')}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
                             <Field label="Hora inicio" error={errors.hora_inicio} required>
                                 <input type="time" value={data.hora_inicio} onChange={e => setData('hora_inicio', e.target.value)} className={inputCls(!!errors.hora_inicio)} />
                             </Field>

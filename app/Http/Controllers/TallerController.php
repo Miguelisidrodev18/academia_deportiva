@@ -80,17 +80,18 @@ class TallerController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'disciplina_id'   => 'required|integer',
-            'nombre'          => 'required|string|max:100',
-            'rango_edad_min'  => 'required|integer|min:1|max:99',
-            'rango_edad_max'  => 'required|integer|min:1|max:99|gte:rango_edad_min',
-            'nivel'           => 'required|in:inicial,intermedio,avanzado',
-            'precio_base'     => 'required|numeric|min:0',
-            'dia_semana'      => 'required|in:lunes,martes,miercoles,jueves,viernes,sabado,domingo',
-            'hora_inicio'     => 'required|date_format:H:i',
-            'hora_fin'        => 'required|date_format:H:i|after:hora_inicio',
-            'entrenador_id'   => 'nullable|integer',
-            'cupo_maximo'     => 'required|integer|min:1',
+            'disciplina_id'    => 'required|integer',
+            'nombre'           => 'required|string|max:100',
+            'rango_edad_min'   => 'required|integer|min:1|max:99',
+            'rango_edad_max'   => 'required|integer|min:1|max:99|gte:rango_edad_min',
+            'nivel'            => 'required|in:inicial,intermedio,avanzado',
+            'precio_base'      => 'required|numeric|min:0',
+            'dias_semana'      => 'required|array|min:1',
+            'dias_semana.*'    => 'in:lunes,martes,miercoles,jueves,viernes,sabado,domingo',
+            'hora_inicio'      => 'required|date_format:H:i',
+            'hora_fin'         => 'required|date_format:H:i|after:hora_inicio',
+            'entrenador_id'    => 'nullable|integer',
+            'cupo_maximo'      => 'required|integer|min:1',
         ]);
 
         // Seguridad: verificar que la disciplina elegida pertenece a esta academia
@@ -129,17 +130,18 @@ class TallerController extends Controller
         $this->authorizar($taller);
 
         $validated = $request->validate([
-            'disciplina_id'   => 'required|integer',
-            'nombre'          => 'required|string|max:100',
-            'rango_edad_min'  => 'required|integer|min:1|max:99',
-            'rango_edad_max'  => 'required|integer|min:1|max:99|gte:rango_edad_min',
-            'nivel'           => 'required|in:inicial,intermedio,avanzado',
-            'precio_base'     => 'required|numeric|min:0',
-            'dia_semana'      => 'required|in:lunes,martes,miercoles,jueves,viernes,sabado,domingo',
-            'hora_inicio'     => 'required|date_format:H:i',
-            'hora_fin'        => 'required|date_format:H:i|after:hora_inicio',
-            'entrenador_id'   => 'nullable|integer',
-            'cupo_maximo'     => 'required|integer|min:1',
+            'disciplina_id'    => 'required|integer',
+            'nombre'           => 'required|string|max:100',
+            'rango_edad_min'   => 'required|integer|min:1|max:99',
+            'rango_edad_max'   => 'required|integer|min:1|max:99|gte:rango_edad_min',
+            'nivel'            => 'required|in:inicial,intermedio,avanzado',
+            'precio_base'      => 'required|numeric|min:0',
+            'dias_semana'      => 'required|array|min:1',
+            'dias_semana.*'    => 'in:lunes,martes,miercoles,jueves,viernes,sabado,domingo',
+            'hora_inicio'      => 'required|date_format:H:i',
+            'hora_fin'         => 'required|date_format:H:i|after:hora_inicio',
+            'entrenador_id'    => 'nullable|integer',
+            'cupo_maximo'      => 'required|integer|min:1',
         ]);
 
         $this->verificarDisciplina($validated['disciplina_id']);

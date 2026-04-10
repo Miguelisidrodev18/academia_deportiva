@@ -14,7 +14,7 @@ interface Alumno {
 interface Taller {
     id: number;
     nombre: string;
-    dia_semana: string;
+    dias_semana: string[];
     hora_inicio: string;
     hora_fin: string;
     precio_base: string;
@@ -144,7 +144,7 @@ export default function InscripcionesCreate({ alumnos, talleres }: Props) {
                                             value={t.id}
                                             disabled={t.cupo_disponible <= 0}
                                         >
-                                            {t.disciplina.nombre} · {t.nombre} ({capitalize(t.dia_semana)} {t.hora_inicio})
+                                            {t.disciplina.nombre} · {t.nombre} ({(t.dias_semana ?? []).map(d => d.charAt(0).toUpperCase() + d.slice(1)).join('/') || '?'} {t.hora_inicio})
                                             {t.cupo_disponible <= 0 ? ' — SIN CUPO' : ` · ${t.cupo_disponible} lugar${t.cupo_disponible !== 1 ? 'es' : ''}`}
                                         </option>
                                     ))}
@@ -161,7 +161,7 @@ export default function InscripcionesCreate({ alumnos, talleres }: Props) {
                                         {tallerPreview.disciplina.nombre} · {tallerPreview.nombre}
                                     </p>
                                     <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
-                                        <span>📅 {capitalize(tallerPreview.dia_semana)}</span>
+                                        <span>📅 {(tallerPreview.dias_semana ?? []).map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ') || '—'}</span>
                                         <span>🕐 {tallerPreview.hora_inicio} – {tallerPreview.hora_fin}</span>
                                         <span>💰 ${parseFloat(tallerPreview.precio_base).toLocaleString('es-AR')}/mes</span>
                                         <span className={tallerPreview.cupo_disponible <= 0 ? 'text-danger font-medium' : 'text-success font-medium'}>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumno;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -19,8 +20,13 @@ class AlumnoController extends Controller
             ->withCount(['inscripciones as inscripciones_activas_count' => function ($q) {
                 $q->where('activo', true);
             }])
+            ->with(['inscripciones' => fn ($q) => $q->where('activo', true)->with('pagos')])
             ->orderBy('nombre')
-            ->get();
+            ->get()
+            ->map(function ($alumno) {
+                $alumno->deuda_total = $alumno->deudaTotal();
+                return $alumno;
+            });
 
         return Inertia::render('Alumnos/Index', [
             'alumnos' => $alumnos,
@@ -41,11 +47,12 @@ class AlumnoController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'nombre'           => 'required|string|max:150',
-            'fecha_nacimiento' => 'required|date|before:today',
-            'dni'              => 'required|string|max:20',
-            'direccion'        => 'nullable|string|max:255',
-            'telefono'         => 'nullable|string|max:30',
+            'nombre'            => 'required|string|max:150',
+            'apellido_familiar' => 'nullable|string|max:80',
+            'fecha_nacimiento'  => 'required|date|before:today',
+            'dni'               => 'required|string|max:20',
+            'direccion'         => 'nullable|string|max:255',
+            'telefono'          => 'nullable|string|max:30',
         ]);
 
         // Verificar que el DNI no esté duplicado dentro de la misma academia
@@ -76,12 +83,13 @@ class AlumnoController extends Controller
 
         $alumno->load([
             'inscripciones' => function ($q) {
-                $q->where('activo', true)
-                  ->with(['taller.disciplina', 'pagos' => function ($pq) {
-                      $pq->orderByDesc('fecha_pago')->limit(3);
-                  }]);
+                $q->with(['taller.disciplina', 'pagos' => function ($pq) {
+                    $pq->orderByDesc('fecha_pago');
+                }]);
             },
         ]);
+
+        $alumno->deuda_total = $alumno->deudaTotal();
 
         return Inertia::render('Alumnos/Show', [
             'alumno' => $alumno,
@@ -108,11 +116,12 @@ class AlumnoController extends Controller
         $this->authorizar($alumno);
 
         $validated = $request->validate([
-            'nombre'           => 'required|string|max:150',
-            'fecha_nacimiento' => 'required|date|before:today',
-            'dni'              => 'required|string|max:20',
-            'direccion'        => 'nullable|string|max:255',
-            'telefono'         => 'nullable|string|max:30',
+            'nombre'            => 'required|string|max:150',
+            'apellido_familiar' => 'nullable|string|max:80',
+            'fecha_nacimiento'  => 'required|date|before:today',
+            'dni'               => 'required|string|max:20',
+            'direccion'         => 'nullable|string|max:255',
+            'telefono'          => 'nullable|string|max:30',
         ]);
 
         // Verificar DNI duplicado excluyendo al alumno actual
@@ -148,6 +157,24 @@ class AlumnoController extends Controller
 
         return redirect()->route('alumnos.index')
             ->with('success', 'Alumno eliminado exitosamente.');
+    }
+
+    /**
+     * Autocomplete JSON: busca alumnos por nombre o DNI (para el form de reservas).
+     */
+    public function buscar(Request $request): JsonResponse
+    {
+        $q = $request->get('q', '');
+        $alumnos = Alumno::where('academia_id', auth()->user()->academia_id)
+            ->where(fn($query) =>
+                $query->where('nombre', 'like', "%{$q}%")
+                      ->orWhere('dni', 'like', "%{$q}%")
+            )
+            ->orderBy('nombre')
+            ->limit(10)
+            ->get(['id', 'nombre', 'dni']);
+
+        return response()->json($alumnos);
     }
 
     /**

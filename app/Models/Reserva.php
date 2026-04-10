@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Reserva extends Model
 {
     protected $fillable = [
-        'espacio_id', 'rango_horario_id', 'fecha_reserva', 'tipo_cliente',
+        'espacio_id', 'rango_horario_id', 'alumno_id', 'fecha_reserva', 'tipo_cliente',
         'cliente_nombre', 'cliente_dni', 'cliente_telefono', 'monto_pagado', 'estado',
     ];
 
@@ -28,6 +28,12 @@ class Reserva extends Model
     public function rangoHorario(): BelongsTo
     {
         return $this->belongsTo(RangoHorario::class);
+    }
+
+    /** El alumno vinculado (si tipo_cliente = 'alumno'). */
+    public function alumno(): BelongsTo
+    {
+        return $this->belongsTo(Alumno::class);
     }
 
     /**

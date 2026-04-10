@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Espacio extends Model
 {
-    protected $fillable = ['academia_id', 'nombre', 'descripcion'];
+    protected $fillable = ['academia_id', 'nombre', 'descripcion', 'equipamiento_base'];
+
+    protected $casts = [
+        'equipamiento_base' => 'array',
+    ];
 
     /** Pertenece a una academia. */
     public function academia(): BelongsTo

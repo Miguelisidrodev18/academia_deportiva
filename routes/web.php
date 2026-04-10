@@ -4,21 +4,21 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\DisciplinaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EspacioController;
 use App\Http\Controllers\InscripcionController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReservaController;
 use App\Http\Controllers\TallerController;
+use App\Http\Controllers\UsuarioController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
 });
 
 // ─── Rutas protegidas: requieren autenticación + academia asignada (tenant) ───
@@ -60,6 +60,25 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::post('asistencias/falta', [AsistenciaController::class, 'marcarFalta'])->name('asistencias.falta');
     // Justificar una falta existente
     Route::patch('asistencias/{asistencia}/justificar', [AsistenciaController::class, 'justificar'])->name('asistencias.justificar');
+
+    // ── Alquileres de espacios ─────────────────────────────────────────────────
+    // Espacios (canchas, salones) — solo dueño puede gestionar
+    Route::resource('espacios', EspacioController::class);
+
+    // Reservas de espacios — dueño y admin_alquiler
+    Route::resource('reservas', ReservaController::class)
+        ->only(['index', 'create', 'store', 'show', 'destroy']);
+    // Devolución de equipamiento (vista + actualizar)
+    Route::get('reservas/{reserva}/devolucion', [ReservaController::class, 'devolucion'])->name('reservas.devolucion');
+    Route::patch('reservas/{reserva}/devolucion', [ReservaController::class, 'updateDevolucion'])->name('reservas.devolucion.update');
+    // API: horarios disponibles para un espacio en una fecha
+    Route::get('reservas/horarios-disponibles', [ReservaController::class, 'horariosDisponibles'])->name('reservas.horarios');
+    // Autocomplete de alumnos (para el form de reservas)
+    Route::get('alumnos/buscar', [AlumnoController::class, 'buscar'])->name('alumnos.buscar');
+
+    // Gestión de usuarios y roles (solo dueño)
+    Route::resource('usuarios', UsuarioController::class)
+        ->only(['index', 'create', 'store', 'edit', 'update']);
 
     // Perfil del usuario autenticado
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

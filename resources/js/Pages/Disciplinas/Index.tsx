@@ -1,5 +1,6 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
+import { getSportIcon } from '@/utils/sportIcons';
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -16,7 +17,6 @@ interface Props {
 // ─── Componente ───────────────────────────────────────────────────────────────
 
 export default function DisciplinasIndex({ disciplinas }: Props) {
-    // Flash messages enviados desde el controlador (success / error)
     const { flash } = usePage().props as any;
 
     function handleEliminar(id: number, nombre: string) {
@@ -26,7 +26,7 @@ export default function DisciplinasIndex({ disciplinas }: Props) {
 
     return (
         <AppLayout title="Disciplinas">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-5xl mx-auto">
 
                 {/* Encabezado */}
                 <div className="flex items-center justify-between mb-6">
@@ -44,7 +44,7 @@ export default function DisciplinasIndex({ disciplinas }: Props) {
                     </Link>
                 </div>
 
-                {/* Mensaje flash */}
+                {/* Flash messages */}
                 {flash?.success && (
                     <div className="bg-green-50 border border-success text-success rounded-lg px-4 py-3 mb-4 text-sm">
                         {flash.success}
@@ -56,56 +56,74 @@ export default function DisciplinasIndex({ disciplinas }: Props) {
                     </div>
                 )}
 
-                {/* Tabla */}
+                {/* Grid de cards */}
                 {disciplinas.length === 0 ? (
-                    <div className="text-center py-16 text-muted">
-                        <p className="text-4xl mb-3">🏅</p>
+                    <div className="text-center py-20 text-muted">
+                        <p className="text-5xl mb-4">🏅</p>
                         <p className="text-lg font-medium">Todavía no hay disciplinas.</p>
                         <p className="text-sm mt-1">Creá la primera para comenzar a organizar tus talleres.</p>
+                        <Link
+                            href={route('disciplinas.create')}
+                            className="inline-block mt-5 bg-primary text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors"
+                        >
+                            + Crear primera disciplina
+                        </Link>
                     </div>
                 ) : (
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                        <table className="w-full text-sm">
-                            <thead className="bg-gray-50 text-muted uppercase text-xs tracking-wide">
-                                <tr>
-                                    <th className="px-5 py-3 text-left">Nombre</th>
-                                    <th className="px-5 py-3 text-center">Talleres</th>
-                                    <th className="px-5 py-3 text-right">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100">
-                                {disciplinas.map((d) => (
-                                    <tr key={d.id} className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-5 py-3 font-medium text-secondary">{d.nombre}</td>
-                                        <td className="px-5 py-3 text-center">
-                                            <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
-                                                d.talleres_count > 0
-                                                    ? 'bg-orange-100 text-primary'
-                                                    : 'bg-gray-100 text-muted'
-                                            }`}>
-                                                {d.talleres_count} {d.talleres_count === 1 ? 'taller' : 'talleres'}
-                                            </span>
-                                        </td>
-                                        <td className="px-5 py-3 text-right space-x-3">
-                                            <Link
-                                                href={route('disciplinas.edit', d.id)}
-                                                className="text-blue-600 hover:underline"
-                                            >
-                                                Editar
-                                            </Link>
-                                            <button
-                                                onClick={() => handleEliminar(d.id, d.nombre)}
-                                                className="text-danger hover:underline disabled:opacity-50"
-                                                disabled={d.talleres_count > 0}
-                                                title={d.talleres_count > 0 ? 'Tiene talleres activos' : ''}
-                                            >
-                                                Eliminar
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        {disciplinas.map((d) => (
+                            <div
+                                key={d.id}
+                                className="group bg-white rounded-2xl border border-gray-100 shadow-sm
+                                           hover:border-primary hover:shadow-md transition-all duration-200
+                                           flex flex-col items-center p-5 text-center relative overflow-hidden"
+                            >
+                                {/* Ícono de fondo (watermark) */}
+                                <span className="absolute -bottom-3 -right-3 text-7xl opacity-5 select-none pointer-events-none">
+                                    {getSportIcon(d.nombre)}
+                                </span>
+
+                                {/* Ícono principal */}
+                                <span className="text-5xl mb-3 block leading-none">
+                                    {getSportIcon(d.nombre)}
+                                </span>
+
+                                {/* Nombre */}
+                                <h3 className="font-semibold text-secondary text-sm leading-tight mb-1">
+                                    {d.nombre}
+                                </h3>
+
+                                {/* Badge talleres */}
+                                <span className={`text-xs px-2 py-0.5 rounded-full font-medium mb-4 ${
+                                    d.talleres_count > 0
+                                        ? 'bg-orange-100 text-primary'
+                                        : 'bg-gray-100 text-muted'
+                                }`}>
+                                    {d.talleres_count} {d.talleres_count === 1 ? 'taller' : 'talleres'}
+                                </span>
+
+                                {/* Acciones */}
+                                <div className="flex gap-2 w-full mt-auto">
+                                    <Link
+                                        href={route('disciplinas.edit', d.id)}
+                                        className="flex-1 text-center text-xs font-medium text-blue-600
+                                                   bg-blue-50 hover:bg-blue-100 rounded-lg py-1.5 transition-colors"
+                                    >
+                                        Editar
+                                    </Link>
+                                    <button
+                                        onClick={() => handleEliminar(d.id, d.nombre)}
+                                        disabled={d.talleres_count > 0}
+                                        title={d.talleres_count > 0 ? 'Tiene talleres activos' : ''}
+                                        className="flex-1 text-xs font-medium text-danger
+                                                   bg-red-50 hover:bg-red-100 rounded-lg py-1.5 transition-colors
+                                                   disabled:opacity-30 disabled:cursor-not-allowed"
+                                    >
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>

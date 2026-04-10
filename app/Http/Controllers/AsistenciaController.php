@@ -33,7 +33,7 @@ class AsistenciaController extends Controller
             ->when($user->rol === 'entrenador', fn($q) => $q->where('entrenador_id', $user->id))
             ->with('disciplina:id,nombre')
             ->orderBy('nombre')
-            ->get(['id', 'nombre', 'dia_semana', 'hora_inicio', 'hora_fin', 'disciplina_id']);
+            ->get(['id', 'nombre', 'dias_semana', 'hora_inicio', 'hora_fin', 'disciplina_id']);
 
         return Inertia::render('Asistencia/Escanear', [
             'talleres' => $talleres,
@@ -106,10 +106,14 @@ class AsistenciaController extends Controller
                 'jueves' => 'Jueves', 'viernes' => 'Viernes',
                 'sabado' => 'Sábado', 'domingo' => 'Domingo',
             ];
+            $diasLabel = implode(', ', array_map(
+                fn($d) => $diasMap[$d] ?? $d,
+                $taller->dias_semana ?? []
+            ));
             return response()->json([
                 'error' => sprintf(
                     'Fuera de horario. El taller es los %s de %s a %s (margen ±15 min).',
-                    $diasMap[$taller->dia_semana] ?? $taller->dia_semana,
+                    $diasLabel ?: 'días sin configurar',
                     $taller->hora_inicio,
                     $taller->hora_fin
                 ),

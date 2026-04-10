@@ -2,6 +2,7 @@ import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import AppLayout from '@/Layouts/AppLayout';
+import { DIA_LABEL } from '@/utils/talleres';
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -21,7 +22,7 @@ interface Inscripcion {
 interface Taller {
     id: number;
     nombre: string;
-    dia_semana: string;
+    dias_semana: string[];
     hora_inicio: string;
     hora_fin: string;
     nivel: string;
@@ -35,10 +36,6 @@ interface Taller {
 interface Props {
     taller: Taller;
 }
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function capitalize(s: string) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
 // ─── Componente ───────────────────────────────────────────────────────────────
 
@@ -109,14 +106,21 @@ export default function TalleresShow({ taller }: Props) {
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-sm text-gray-600">
                         <div>
-                            <p className="text-xs text-muted">Día y horario</p>
-                            <p className="font-medium text-secondary">
-                                {capitalize(taller.dia_semana)} {taller.hora_inicio}–{taller.hora_fin}
+                            <p className="text-xs text-muted">Días y horario</p>
+                            <div className="flex flex-wrap gap-1 mt-0.5 mb-1">
+                                {(taller.dias_semana ?? []).map(dia => (
+                                    <span key={dia} className="px-1.5 py-0.5 bg-secondary/10 text-secondary rounded text-[10px] font-medium">
+                                        {DIA_LABEL[dia] ?? dia}
+                                    </span>
+                                ))}
+                            </div>
+                            <p className="font-medium text-secondary text-sm">
+                                {taller.hora_inicio}–{taller.hora_fin}
                             </p>
                         </div>
                         <div>
                             <p className="text-xs text-muted">Nivel</p>
-                            <p className="font-medium text-secondary">{capitalize(taller.nivel)}</p>
+                            <p className="font-medium text-secondary capitalize">{taller.nivel}</p>
                         </div>
                         <div>
                             <p className="text-xs text-muted">Entrenador</p>

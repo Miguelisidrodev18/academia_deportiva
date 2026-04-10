@@ -28,18 +28,23 @@ interface NavItem {
  * - roles → filtro por rol (si el usuario no tiene ese rol, no se muestra)
  */
 const navItems: NavItem[] = [
-    { label: 'Dashboard',        href: '/dashboard',            icon: '📊' },
-    { label: 'Alumnos',          href: '/alumnos',              icon: '👥' },
-    { label: 'Talleres',         href: '/talleres',             icon: '⚽' },
-    { label: 'Pagos',            href: '/pagos',                icon: '💰' },
-    { label: 'Asistencia QR',    href: '/asistencia/escanear',  icon: '✅' },
-    { label: 'Alquileres',       href: '/alquileres',           icon: '🏟️' },
-    { label: 'Equipamiento',     href: '/equipamiento',         icon: '🎽' },
-    { label: 'Ventas',           href: '/ventas',               icon: '🛒' },
-    // --- Módulos deshabilitados (post-MVP) ---
-    { label: 'Reportes',         icon: '📈', badge: 'Pronto' },
-    { label: 'Usuarios y roles', icon: '👤', badge: 'En construcción', roles: ['dueno'] },
-    { label: 'Configuración',    icon: '⚙️',  badge: 'Pronto',          roles: ['dueno'] },
+    // ── Módulos activos ──────────────────────────────────────────────────────
+    { label: 'Dashboard',        href: '/dashboard',           icon: '📊' },
+    { label: 'Disciplinas',      href: '/disciplinas',         icon: '🏅', roles: ['dueno'] },
+    { label: 'Talleres',         href: '/talleres',            icon: '⚽' },
+    { label: 'Alumnos',          href: '/alumnos',             icon: '👥' },
+    { label: 'Inscripciones',    href: '/inscripciones',       icon: '📋' },
+    { label: 'Pagos',            href: '/pagos',               icon: '💰' },
+    { label: 'Asistencia QR',    href: '/asistencia/escanear', icon: '📷', roles: ['dueno', 'entrenador'] },
+    { label: 'Historial asist.', href: '/asistencias',         icon: '✅', roles: ['dueno', 'entrenador'] },
+    // ── Próximas sesiones (sin ruta aún) ────────────────────────────────────
+    { label: 'Alquileres',       href: '/reservas',            icon: '🏟️', roles: ['dueno', 'admin_alquiler'] },
+    { label: 'Equipamiento',     icon: '🎽',  badge: 'Pronto' },
+    { label: 'Ventas',           icon: '🛒',  badge: 'Pronto' },
+    // ── Solo dueño ──────────────────────────────────────────────────────────
+    { label: 'Usuarios y roles', href: '/usuarios',            icon: '👤', roles: ['dueno'] },
+    { label: 'Reportes',         icon: '📈',  badge: 'Pronto', roles: ['dueno'] },
+    { label: 'Configuración',    icon: '⚙️',   badge: 'Pronto', roles: ['dueno'] },
 ];
 
 // ─── Componente principal ─────────────────────────────────────────────────────

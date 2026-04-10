@@ -9,7 +9,7 @@ import AppLayout from '@/Layouts/AppLayout';
 interface Taller {
     id: number;
     nombre: string;
-    dia_semana: string;
+    dias_semana: string[];
     hora_inicio: string;
     hora_fin: string;
     disciplina: { nombre: string };
@@ -202,7 +202,7 @@ export default function AsistenciaEscanear({ talleres }: Props) {
                                 <p key={t.id} className="text-sm text-secondary">
                                     <span className="font-medium">{t.nombre}</span>
                                     <span className="text-muted ml-2">
-                                        {capitalize(t.dia_semana)} {t.hora_inicio}–{t.hora_fin}
+                                        {(t.dias_semana ?? []).map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ')} {t.hora_inicio}–{t.hora_fin}
                                     </span>
                                 </p>
                             ))}

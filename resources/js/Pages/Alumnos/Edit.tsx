@@ -4,6 +4,7 @@ import AppLayout from '@/Layouts/AppLayout';
 interface Alumno {
     id: number;
     nombre: string;
+    apellido_familiar: string | null;
     fecha_nacimiento: string;
     dni: string;
     direccion: string | null;
@@ -16,11 +17,12 @@ interface Props {
 
 export default function AlumnosEdit({ alumno }: Props) {
     const { data, setData, put, processing, errors } = useForm({
-        nombre:           alumno.nombre,
-        fecha_nacimiento: alumno.fecha_nacimiento,
-        dni:              alumno.dni,
-        direccion:        alumno.direccion ?? '',
-        telefono:         alumno.telefono ?? '',
+        nombre:             alumno.nombre,
+        apellido_familiar:  alumno.apellido_familiar ?? '',
+        fecha_nacimiento:   alumno.fecha_nacimiento,
+        dni:                alumno.dni,
+        direccion:          alumno.direccion ?? '',
+        telefono:           alumno.telefono ?? '',
     });
 
     function handleSubmit(e: React.FormEvent) {
@@ -51,6 +53,20 @@ export default function AlumnosEdit({ alumno }: Props) {
                                 maxLength={150}
                                 className={inputCls(!!errors.nombre)}
                             />
+                        </Field>
+
+                        <Field label="Apellido familiar" error={errors.apellido_familiar}>
+                            <input
+                                type="text"
+                                value={data.apellido_familiar}
+                                onChange={e => setData('apellido_familiar', e.target.value)}
+                                placeholder="García (para descuento por hermanos)"
+                                maxLength={80}
+                                className={inputCls(!!errors.apellido_familiar)}
+                            />
+                            <p className="text-xs text-muted mt-0.5">
+                                Ingresá el apellido si el alumno tiene hermanos inscriptos. Aplica descuento automático.
+                            </p>
                         </Field>
 
                         <Field label="Fecha de nacimiento" error={errors.fecha_nacimiento} required>

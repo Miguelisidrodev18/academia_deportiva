@@ -47,7 +47,7 @@ class InscripcionController extends Controller
         $talleres = Taller::whereHas('disciplina', fn($q) => $q->where('academia_id', $academiaId))
             ->with('disciplina:id,nombre')
             ->withCount(['inscripciones as inscriptos' => fn($q) => $q->where('activo', true)])
-            ->get(['id', 'nombre', 'disciplina_id', 'cupo_maximo', 'dia_semana', 'hora_inicio', 'hora_fin', 'precio_base'])
+            ->get(['id', 'nombre', 'disciplina_id', 'cupo_maximo', 'dias_semana', 'hora_inicio', 'hora_fin', 'precio_base'])
             ->map(function ($t) {
                 $t->cupo_disponible = $t->cupo_maximo - $t->inscriptos;
                 return $t;
@@ -137,7 +137,7 @@ class InscripcionController extends Controller
 
         $inscripcion->load([
             'alumno:id,nombre,dni',
-            'taller:id,nombre,dia_semana,hora_inicio,hora_fin,precio_base,disciplina_id',
+            'taller:id,nombre,dias_semana,hora_inicio,hora_fin,precio_base,disciplina_id',
             'taller.disciplina:id,nombre',
         ]);
 

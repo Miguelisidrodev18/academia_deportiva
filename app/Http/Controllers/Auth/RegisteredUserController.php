@@ -61,13 +61,26 @@ class RegisteredUserController extends Controller
             ]);
 
             // Paso 2: Crear el Usuario como dueño de esa academia
-            return User::create([
+            $user = User::create([
                 'name'        => $request->name,
                 'email'       => $request->email,
                 'password'    => Hash::make($request->password),
                 'academia_id' => $academia->id,
-                'rol'         => 'dueno', // El primer usuario siempre es el dueño
+                'rol'         => 'dueno',
             ]);
+
+            // Paso 3: Crear disciplinas por defecto para la academia
+            $now = now();
+            $academia->disciplinas()->insert(
+                array_map(fn ($nombre) => [
+                    'academia_id' => $academia->id,
+                    'nombre'      => $nombre,
+                    'created_at'  => $now,
+                    'updated_at'  => $now,
+                ], ['Fútbol', 'Vóley', 'Básquet', 'Tenis', 'Natación', 'Atletismo', 'Artes Marciales', 'Gimnasia'])
+            );
+
+            return $user;
         });
 
         event(new Registered($user));

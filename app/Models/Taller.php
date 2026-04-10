@@ -14,12 +14,13 @@ class Taller extends Model
 
     protected $fillable = [
         'disciplina_id', 'nombre', 'rango_edad_min', 'rango_edad_max',
-        'nivel', 'precio_base', 'dia_semana', 'hora_inicio', 'hora_fin',
+        'nivel', 'precio_base', 'dias_semana', 'hora_inicio', 'hora_fin',
         'entrenador_id', 'cupo_maximo',
     ];
 
     protected $casts = [
         'precio_base' => 'decimal:2',
+        'dias_semana' => 'array',   // JSON → PHP array automáticamente
     ];
 
     /** El taller pertenece a una disciplina. */
@@ -52,7 +53,7 @@ class Taller extends Model
      * Verifica si ahora mismo está dentro del horario del taller
      * con un margen de ±$margenMinutos minutos.
      *
-     * El taller guarda dia_semana en español minúsculas (lunes, martes...).
+     * dias_semana es un array JSON, ej: ["lunes","miercoles"].
      * Carbon retorna el nombre del día en inglés, así que mapeamos.
      *
      * @param  int $margenMinutos  Margen antes/después del horario (default 15 min)
@@ -75,8 +76,8 @@ class Taller extends Model
 
         $diaHoy = $diasMap[$ahora->format('l')] ?? '';
 
-        // Verificar que sea el día correcto
-        if ($diaHoy !== $this->dia_semana) {
+        // Verificar que hoy sea uno de los días del taller
+        if (!in_array($diaHoy, $this->dias_semana ?? [])) {
             return false;
         }
 

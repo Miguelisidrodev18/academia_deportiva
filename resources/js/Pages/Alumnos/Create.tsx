@@ -3,11 +3,12 @@ import AppLayout from '@/Layouts/AppLayout';
 
 export default function AlumnosCreate() {
     const { data, setData, post, processing, errors } = useForm({
-        nombre:           '',
-        fecha_nacimiento: '',
-        dni:              '',
-        direccion:        '',
-        telefono:         '',
+        nombre:             '',
+        apellido_familiar:  '',
+        fecha_nacimiento:   '',
+        dni:                '',
+        direccion:          '',
+        telefono:           '',
     });
 
     function handleSubmit(e: React.FormEvent) {
@@ -39,6 +40,21 @@ export default function AlumnosCreate() {
                                 maxLength={150}
                                 className={inputCls(!!errors.nombre)}
                             />
+                        </Field>
+
+                        {/* Apellido familiar (para descuento hermanos) */}
+                        <Field label="Apellido familiar" error={errors.apellido_familiar}>
+                            <input
+                                type="text"
+                                value={data.apellido_familiar}
+                                onChange={e => setData('apellido_familiar', e.target.value)}
+                                placeholder="García (para descuento por hermanos)"
+                                maxLength={80}
+                                className={inputCls(!!errors.apellido_familiar)}
+                            />
+                            <p className="text-xs text-muted mt-0.5">
+                                Ingresá el apellido si el alumno tiene hermanos inscriptos. Aplica descuento automático.
+                            </p>
                         </Field>
 
                         {/* Fecha de nacimiento */}

@@ -13,7 +13,7 @@ interface Alumno {
 interface Taller {
     id: number;
     nombre: string;
-    dia_semana: string;
+    dias_semana: string[];
     hora_inicio: string;
     hora_fin: string;
     precio_base: string;
@@ -95,7 +95,7 @@ export default function InscripcionesShow({ inscripcion }: Props) {
                             {inscripcion.taller.disciplina.nombre} · {inscripcion.taller.nombre}
                         </span>
                         <p className="text-xs text-muted mt-1">
-                            {capitalize(inscripcion.taller.dia_semana)} · {inscripcion.taller.hora_inicio} – {inscripcion.taller.hora_fin}
+                            {(inscripcion.taller.dias_semana ?? []).map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ')} · {inscripcion.taller.hora_inicio} – {inscripcion.taller.hora_fin}
                         </p>
                     </div>
 
