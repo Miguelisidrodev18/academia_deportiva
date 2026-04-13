@@ -19,6 +19,7 @@ import {
     Cog6ToothIcon,
     ArrowLeftStartOnRectangleIcon,
     Bars3Icon,
+    DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
@@ -83,9 +84,10 @@ const navGroups: NavGroup[] = [
     {
         label: 'ADMINISTRACIÓN',
         items: [
-            { label: 'Usuarios',         href: '/usuarios',            Icon: UserCircleIcon,  roles: ['dueno'] },
-            { label: 'Reportes',         Icon: ChartBarIcon,            badge: 'Pronto',       roles: ['dueno'] },
-            { label: 'Configuración',    Icon: Cog6ToothIcon,           badge: 'Pronto',       roles: ['dueno'] },
+            { label: 'Usuarios',         href: '/usuarios',            Icon: UserCircleIcon,   roles: ['dueno'] },
+            { label: 'Logs',             href: '/logs',                Icon: DocumentTextIcon, roles: ['dueno'] },
+            { label: 'Reportes',         Icon: ChartBarIcon,            badge: 'Pronto',        roles: ['dueno'] },
+            { label: 'Configuración',    Icon: Cog6ToothIcon,           badge: 'Pronto',        roles: ['dueno'] },
         ],
     },
 ];

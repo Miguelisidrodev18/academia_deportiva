@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Equipamiento;
+use App\Models\LogAuditoria;
 use App\Models\PrestamoDetalle;
 use App\Models\PrestamoEspecial;
 use Illuminate\Http\RedirectResponse;
@@ -113,6 +114,17 @@ class PrestamoEspecialController extends Controller
                 ->decrement('stock_disponible', $item['cantidad']);
         }
 
+        // Construir resumen de ítems para el log
+        $itemsResumen = collect($data['items'])->map(function ($item) {
+            $eq = Equipamiento::find($item['equipamiento_id']);
+            return "{$item['cantidad']}× {$eq->nombre}";
+        })->join(', ');
+
+        LogAuditoria::registrar(
+            'prestamo_especial',
+            "Préstamo registrado para «{$data['solicitante_nombre']}» ({$data['solicitante_tipo']}): {$itemsResumen}"
+        );
+
         return redirect()->route('prestamos.show', $prestamo->id)
             ->with('success', 'Préstamo registrado correctamente.');
     }
@@ -196,6 +208,11 @@ class PrestamoEspecialController extends Controller
                 'estado'               => 'completado',
                 'fecha_devolucion_real' => now()->toDateString(),
             ]);
+
+            LogAuditoria::registrar(
+                'devolucion_prestamo',
+                "Préstamo #{$prestamo->id} de «{$prestamo->solicitante_nombre}» completado (devolución total)"
+            );
         }
 
         return redirect()->route('prestamos.show', $prestamo->id)

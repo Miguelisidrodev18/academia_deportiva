@@ -124,6 +124,11 @@ class InscripcionController extends Controller
             'qr_code'    => $qrCode,
         ]);
 
+        LogAuditoria::registrar(
+            'inscripcion_alumno',
+            "Alumno «{$alumno->nombre}» inscripto en el taller «{$taller->nombre}»"
+        );
+
         return redirect()->route('inscripciones.show', $inscripcion->id)
             ->with('success', '¡Alumno inscripto! Aquí está su código QR.');
     }
@@ -155,10 +160,17 @@ class InscripcionController extends Controller
     {
         $this->authorizar($inscripcion);
 
+        $inscripcion->loadMissing(['alumno', 'taller']);
+
         $inscripcion->update([
             'activo' => false,
             'estado' => 'egresado',
         ]);
+
+        LogAuditoria::registrar(
+            'baja_inscripcion',
+            "Baja de inscripción de «{$inscripcion->alumno->nombre}» del taller «{$inscripcion->taller->nombre}»"
+        );
 
         return redirect()->route('inscripciones.index')
             ->with('success', 'Inscripción dada de baja. El historial se conserva.');

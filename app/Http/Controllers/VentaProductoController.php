@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LogAuditoria;
 use App\Models\Producto;
 use App\Models\VentaProducto;
 use Illuminate\Http\RedirectResponse;
@@ -132,7 +133,12 @@ class VentaProductoController extends Controller
         // Descontar del stock
         $producto->decrement('stock', $data['cantidad']);
 
+        LogAuditoria::registrar(
+            'registro_venta',
+            "Venta de {$data['cantidad']}× «{$producto->nombre}» — Total: S/ " . number_format($total, 2)
+        );
+
         return redirect()->route('ventas.index')
-            ->with('success', "Venta de {$data['cantidad']}× «{$producto->nombre}» registrada. Total: $" . number_format($total, 2));
+            ->with('success', "Venta de {$data['cantidad']}× «{$producto->nombre}» registrada. Total: S/ " . number_format($total, 2));
     }
 }

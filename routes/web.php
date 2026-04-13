@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\LogAuditoriaController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\DisciplinaController;
 use App\Http\Controllers\DashboardController;
@@ -93,6 +94,9 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     // Historial y registro de ventas (dueño + admin_caja)
     Route::resource('ventas', VentaProductoController::class)
         ->only(['index', 'create', 'store']);
+
+    // ── Logs de auditoría (solo dueño) ───────────────────────────────────────
+    Route::get('logs', [LogAuditoriaController::class, 'index'])->name('logs.index');
 
     // Gestión de usuarios y roles (solo dueño)
     Route::resource('usuarios', UsuarioController::class)
