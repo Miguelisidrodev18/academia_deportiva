@@ -80,7 +80,7 @@ export default function AsistenciaListado({ asistencias, talleres, fecha }: Prop
                     <div>
                         <h1 className="text-2xl font-bold text-secondary">Asistencias</h1>
                         <p className="text-muted text-sm mt-1">
-                            {new Date(fecha).toLocaleDateString('es-AR', { weekday: 'long', day: '2-digit', month: 'long' })}
+                            {new Date(fecha).toLocaleDateString('es-PE', { weekday: 'long', day: '2-digit', month: 'long' })}
                             {' · '}
                             <span className="text-success font-medium">{presentes} presentes</span>
                             {faltas > 0 && <> · <span className="text-danger font-medium">{faltas} faltas</span></>}

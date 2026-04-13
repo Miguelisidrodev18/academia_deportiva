@@ -202,7 +202,7 @@ export default function ReservasCreate({ espacios, rangoDisponibles, fecha, espa
 
                             <div className="bg-blue-50 rounded-lg px-3 py-2 text-xs text-blue-700">
                                 <span className="font-medium">{espacioActual?.nombre}</span>
-                                {' · '}{new Date(data.fecha_reserva + 'T00:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: '2-digit', month: 'long' })}
+                                {' · '}{new Date(data.fecha_reserva + 'T00:00:00').toLocaleDateString('es-PE', { weekday: 'long', day: '2-digit', month: 'long' })}
                             </div>
 
                             {cargandoRangos ? (
@@ -230,7 +230,7 @@ export default function ReservasCreate({ espacios, rangoDisponibles, fecha, espa
                                         >
                                             <span>{DIA_NUM_LABEL[rango.dia_semana]} {rango.hora_inicio} – {rango.hora_fin}</span>
                                             <div className="flex items-center gap-3">
-                                                <span className="font-semibold">${parseFloat(rango.precio).toLocaleString('es-AR')}</span>
+                                                <span className="font-semibold">S/ {parseFloat(rango.precio).toLocaleString('es-PE')}</span>
                                                 <span className={`text-xs px-2 py-0.5 rounded-full ${rango.disponible ? 'bg-green-100 text-success' : 'bg-red-100 text-danger'}`}>
                                                     {rango.disponible ? 'Libre' : 'Ocupado'}
                                                 </span>
@@ -255,7 +255,7 @@ export default function ReservasCreate({ espacios, rangoDisponibles, fecha, espa
                             <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 text-sm text-orange-800">
                                 <p className="font-semibold mb-1">{espacioActual?.nombre}</p>
                                 <p className="text-xs">
-                                    {new Date(data.fecha_reserva + 'T00:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
+                                    {new Date(data.fecha_reserva + 'T00:00:00').toLocaleDateString('es-PE', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}
                                     {' · '}{rangoSel?.hora_inicio}–{rangoSel?.hora_fin}
                                 </p>
                             </div>
@@ -341,7 +341,7 @@ export default function ReservasCreate({ espacios, rangoDisponibles, fecha, espa
                                     </div>
                                     {errors.monto_pagado && <p className="text-danger text-xs mt-1">{errors.monto_pagado}</p>}
                                     {rangoSel && (
-                                        <p className="text-xs text-muted mt-1">Precio del rango: ${parseFloat(rangoSel.precio).toLocaleString('es-AR')}</p>
+                                        <p className="text-xs text-muted mt-1">Precio del rango: S/ {parseFloat(rangoSel.precio).toLocaleString('es-PE')}</p>
                                     )}
                                 </div>
                             </div>

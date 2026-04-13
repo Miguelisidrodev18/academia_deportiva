@@ -41,7 +41,7 @@ function capitalize(s: string) {
 }
 
 function formatFecha(f: string) {
-    return new Date(f).toLocaleDateString('es-AR', {
+    return new Date(f).toLocaleDateString('es-PE', {
         day: '2-digit', month: 'long', year: 'numeric',
     });
 }

@@ -163,7 +163,7 @@ export default function InscripcionesCreate({ alumnos, talleres }: Props) {
                                     <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
                                         <span>📅 {(tallerPreview.dias_semana ?? []).map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ') || '—'}</span>
                                         <span>🕐 {tallerPreview.hora_inicio} – {tallerPreview.hora_fin}</span>
-                                        <span>💰 ${parseFloat(tallerPreview.precio_base).toLocaleString('es-AR')}/mes</span>
+                                        <span>💰 S/ {parseFloat(tallerPreview.precio_base).toLocaleString('es-PE')}/mes</span>
                                         <span className={tallerPreview.cupo_disponible <= 0 ? 'text-danger font-medium' : 'text-success font-medium'}>
                                             🪑 {tallerPreview.inscriptos}/{tallerPreview.cupo_maximo} inscriptos
                                             {tallerPreview.cupo_disponible <= 0 ? ' (lleno)' : ` · ${tallerPreview.cupo_disponible} disponibles`}

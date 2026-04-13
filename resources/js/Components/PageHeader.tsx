@@ -11,13 +11,13 @@ interface Props {
 }
 
 function todayLabel(): string {
-    return new Date().toLocaleDateString('es-AR', {
+    return new Date().toLocaleDateString('es-PE', {
         weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
     });
 }
 
 function timeLabel(): string {
-    return new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+    return new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
 }
 
 /**

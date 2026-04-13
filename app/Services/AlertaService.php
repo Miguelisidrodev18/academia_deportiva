@@ -54,15 +54,19 @@ class AlertaService
     }
 
     /**
-     * Equipamiento no devuelto: préstamos atrasados o sin fecha de devolución real.
+     * Préstamos atrasados: activos cuya fecha esperada ya pasó, o marcados 'atrasado'.
      */
-    public function equipamientoNoDevuelto(int $academiaId): Collection
+    public function prestamosAtrasados(int $academiaId): Collection
     {
         return \App\Models\PrestamoEspecial::where('academia_id', $academiaId)
-            ->where('estado', 'activo')
-            ->where('fecha_devolucion_esperada', '<', now()->toDateString())
-            ->whereNull('fecha_devolucion_real')
-            ->with(['prestamo_detalles.equipamiento'])
+            ->where(function ($q) {
+                $q->where('estado', 'atrasado')
+                  ->orWhere(function ($q2) {
+                      $q2->where('estado', 'activo')
+                         ->where('fecha_devolucion_esperada', '<', now()->toDateString());
+                  });
+            })
+            ->with(['detalles.equipamiento:id,nombre'])
             ->orderBy('fecha_devolucion_esperada')
             ->get();
     }

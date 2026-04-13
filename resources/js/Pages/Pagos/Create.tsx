@@ -137,7 +137,7 @@ export default function PagosCreate({ alumnos }: Props) {
                                     2. Seleccionar taller a pagar
                                 </h2>
                                 <span className={`text-sm font-semibold ${deudaData.deuda_total > 0 ? 'text-danger' : 'text-success'}`}>
-                                    Deuda total: ${deudaData.deuda_total.toLocaleString('es-AR')}
+                                    Deuda total: S/ {deudaData.deuda_total.toLocaleString('es-PE')}
                                 </span>
                             </div>
 
@@ -167,20 +167,20 @@ export default function PagosCreate({ alumnos }: Props) {
                                                     {insc.disciplina} · {insc.taller_nombre}
                                                 </p>
                                                 <div className="flex flex-wrap gap-x-4 gap-y-0.5 mt-1 text-xs text-gray-600">
-                                                    <span>Precio base: ${insc.precio_base.toLocaleString('es-AR')}</span>
+                                                    <span>Precio base: S/ {insc.precio_base.toLocaleString('es-PE')}</span>
                                                     {insc.descuento_pct > 0 && (
                                                         <span className="text-success font-medium">
                                                             Descuento {insc.descuento_tipo === 'hermanos' ? 'hermanos' : 'multi-taller'}: {insc.descuento_pct}%
                                                         </span>
                                                     )}
                                                     <span className="font-semibold text-secondary">
-                                                        Precio final: ${insc.precio_final.toLocaleString('es-AR')}
+                                                        Precio final: S/ {insc.precio_final.toLocaleString('es-PE')}
                                                     </span>
                                                 </div>
                                             </div>
                                             <div className="text-right">
                                                 <p className={`text-sm font-bold ${insc.deuda > 0 ? 'text-danger' : 'text-success'}`}>
-                                                    {insc.deuda > 0 ? `$${insc.deuda.toLocaleString('es-AR')}` : 'Al día ✓'}
+                                                    {insc.deuda > 0 ? `S/ ${insc.deuda.toLocaleString('es-PE')}` : 'Al día ✓'}
                                                 </p>
                                                 <p className="text-xs text-muted">deuda</p>
                                             </div>
@@ -248,9 +248,9 @@ export default function PagosCreate({ alumnos }: Props) {
                                     />
                                     {inscripcionSeleccionada && (
                                         <p className="text-xs text-muted mt-1">
-                                            Cuota mensual: <span className="font-medium">${inscripcionSeleccionada.precio_final.toLocaleString('es-AR')}</span>
+                                            Cuota mensual: <span className="font-medium">${inscripcionSeleccionada.precio_final.toLocaleString('es-PE')}</span>
                                             {inscripcionSeleccionada.deuda > 0 && (
-                                                <> · Deuda total: <span className="text-danger font-medium">${inscripcionSeleccionada.deuda.toLocaleString('es-AR')}</span></>
+                                                <> · Deuda total: <span className="text-danger font-medium">${inscripcionSeleccionada.deuda.toLocaleString('es-PE')}</span></>
                                             )}
                                         </p>
                                     )}

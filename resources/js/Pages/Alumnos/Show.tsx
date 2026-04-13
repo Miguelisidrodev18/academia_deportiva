@@ -103,7 +103,7 @@ export default function AlumnosShow({ alumno }: Props) {
                     />
                     <StatCard
                         icon="💰" label="Deuda total"
-                        value={`$${(alumno.deuda_total ?? 0).toLocaleString('es-AR')}`}
+                        value={`S/ ${(alumno.deuda_total ?? 0).toLocaleString('es-PE')}`}
                         valueClass={alumno.deuda_total > 0 ? 'text-danger' : 'text-success'}
                         accent={alumno.deuda_total > 0 ? 'border-l-danger' : 'border-l-success'}
                         iconBg={alumno.deuda_total > 0 ? 'bg-red-100' : 'bg-green-100'}
@@ -114,7 +114,7 @@ export default function AlumnosShow({ alumno }: Props) {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-5">
                     <h2 className="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Datos personales</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-                        <InfoField label="Fecha de nacimiento" value={new Date(alumno.fecha_nacimiento + 'T00:00:00').toLocaleDateString('es-AR')} />
+                        <InfoField label="Fecha de nacimiento" value={new Date(alumno.fecha_nacimiento + 'T00:00:00').toLocaleDateString('es-PE')} />
                         {alumno.apellido_familiar && (
                             <InfoField label="Grupo familiar" value={alumno.apellido_familiar} badge="descuento hermanos" />
                         )}
@@ -185,7 +185,7 @@ export default function AlumnosShow({ alumno }: Props) {
                                                             {pago.metodo === 'yape' ? 'Yape' : 'Efectivo'}
                                                         </span>
                                                         <span className="font-medium text-success">
-                                                            ${parseFloat(pago.monto).toLocaleString('es-AR')}
+                                                            S/ {parseFloat(pago.monto).toLocaleString('es-PE')}
                                                         </span>
                                                     </span>
                                                 </div>

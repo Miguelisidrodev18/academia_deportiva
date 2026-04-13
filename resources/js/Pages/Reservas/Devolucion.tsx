@@ -65,7 +65,7 @@ export default function ReservasDevolucion({ reserva }: Props) {
                 <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 mb-5 text-sm text-orange-800">
                     <p className="font-semibold">{reserva.espacio.nombre}</p>
                     <p className="text-xs mt-0.5">
-                        {new Date(reserva.fecha_reserva + 'T00:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: '2-digit', month: 'long' })}
+                        {new Date(reserva.fecha_reserva + 'T00:00:00').toLocaleDateString('es-PE', { weekday: 'long', day: '2-digit', month: 'long' })}
                         {' · '}{reserva.rango_horario.hora_inicio}–{reserva.rango_horario.hora_fin}
                         {' · '}{clienteNombre}
                     </p>

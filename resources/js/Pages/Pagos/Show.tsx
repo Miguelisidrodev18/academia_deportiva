@@ -32,7 +32,7 @@ interface Props {
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
 function formatFecha(f: string) {
-    return new Date(f).toLocaleDateString('es-AR', {
+    return new Date(f).toLocaleDateString('es-PE', {
         weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
     });
 }
@@ -65,7 +65,7 @@ export default function PagosShow({ pago }: Props) {
                     <div className="text-center border-b border-gray-100 pb-5 mb-5">
                         <p className="text-xs text-muted uppercase tracking-widest mb-1">Recibo de Pago</p>
                         <p className="text-3xl font-bold text-success">
-                            ${parseFloat(pago.monto).toLocaleString('es-AR')}
+                            S/ {parseFloat(pago.monto).toLocaleString('es-PE')}
                         </p>
                         <p className="text-muted text-sm mt-1">{formatFecha(pago.fecha_pago)}</p>
                     </div>

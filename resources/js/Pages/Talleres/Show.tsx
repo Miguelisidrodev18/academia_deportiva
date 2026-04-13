@@ -202,7 +202,7 @@ export default function TalleresShow({ taller }: Props) {
                                             </span>
                                         </td>
                                         <td className="px-5 py-3 text-center text-xs text-gray-500">
-                                            {new Date(insc.fecha_alta).toLocaleDateString('es-AR')}
+                                            {new Date(insc.fecha_alta).toLocaleDateString('es-PE')}
                                         </td>
                                         <td className="px-5 py-3 text-right space-x-3">
                                             <Link

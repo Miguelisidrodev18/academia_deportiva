@@ -77,7 +77,7 @@ export default function PagosIndex({ pagos, alumnos, filtros }: Props) {
                 {pagos.length > 0 && (
                     <div className="grid grid-cols-2 gap-4 mb-6">
                         <StatCard icon="💳" label="Pagos registrados" value={pagos.length} />
-                        <StatCard icon="✅" label="Total cobrado" value={`$${totalMonto.toLocaleString('es-AR')}`} valueClass="text-success" />
+                        <StatCard icon="✅" label="Total cobrado" value={`S/ ${totalMonto.toLocaleString('es-PE')}`} valueClass="text-success" />
                     </div>
                 )}
 
@@ -151,7 +151,7 @@ export default function PagosIndex({ pagos, alumnos, filtros }: Props) {
                                             </span>
                                         </td>
                                         <td className="px-5 py-3.5 text-right font-semibold text-success">
-                                            ${parseFloat(p.monto).toLocaleString('es-AR')}
+                                            S/ {parseFloat(p.monto).toLocaleString('es-PE')}
                                         </td>
                                         <td className="px-5 py-3.5 text-center text-xs text-muted hidden lg:table-cell">
                                             {formatFecha(p.fecha_pago)}

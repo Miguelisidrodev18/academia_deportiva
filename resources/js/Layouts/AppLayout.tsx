@@ -69,14 +69,15 @@ const navGroups: NavGroup[] = [
     {
         label: 'ALQUILERES',
         items: [
-            { label: 'Reservas',         href: '/reservas',            Icon: BuildingOffice2Icon, roles: ['dueno', 'admin_alquiler'] },
+            { label: 'Reservas',         href: '/reservas',            Icon: BuildingOffice2Icon,        roles: ['dueno', 'admin_alquiler'] },
+            { label: 'Préstamos',        href: '/prestamos',           Icon: WrenchScrewdriverIcon,      roles: ['dueno', 'admin_alquiler'] },
         ],
     },
     {
-        label: 'PRÓXIMAMENTE',
+        label: 'VENTAS',
         items: [
-            { label: 'Equipamiento',     Icon: WrenchScrewdriverIcon,  badge: 'Pronto' },
-            { label: 'Ventas',           Icon: ShoppingCartIcon,        badge: 'Pronto' },
+            { label: 'Ventas',           href: '/ventas',              Icon: ShoppingCartIcon,      roles: ['dueno', 'admin_caja'] },
+            { label: 'Productos',        href: '/productos',           Icon: WrenchScrewdriverIcon, roles: ['dueno'] },
         ],
     },
     {

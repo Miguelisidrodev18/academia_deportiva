@@ -56,7 +56,7 @@ export default function AlumnosIndex({ alumnos }: Props) {
                     <div className="grid grid-cols-3 gap-4 mb-6">
                         <StatCard icon="👥" label="Total alumnos"        value={alumnos.length} />
                         <StatCard icon="⚠️" label="Con deuda pendiente"  value={conDeuda}       valueClass={conDeuda > 0 ? 'text-danger' : 'text-success'} />
-                        <StatCard icon="💰" label="Deuda total academia" value={`$${totalDeuda.toLocaleString('es-AR')}`} valueClass={totalDeuda > 0 ? 'text-danger' : 'text-success'} />
+                        <StatCard icon="💰" label="Deuda total academia" value={`S/ ${totalDeuda.toLocaleString('es-PE')}`} valueClass={totalDeuda > 0 ? 'text-danger' : 'text-success'} />
                     </div>
                 )}
 
@@ -129,7 +129,7 @@ export default function AlumnosIndex({ alumnos }: Props) {
                                                 <td className="px-5 py-3.5 text-right">
                                                     {a.deuda_total > 0 ? (
                                                         <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-danger">
-                                                            ${a.deuda_total.toLocaleString('es-AR')}
+                                                            S/ {a.deuda_total.toLocaleString('es-PE')}
                                                         </span>
                                                     ) : (
                                                         <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-success">

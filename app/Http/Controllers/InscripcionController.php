@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumno;
 use App\Models\Inscripcion;
+use App\Models\LogAuditoria;
 use App\Models\Taller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

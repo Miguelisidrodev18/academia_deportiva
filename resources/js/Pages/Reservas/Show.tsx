@@ -37,7 +37,7 @@ const ESTADO_BADGE: Record<string, string> = {
 const DIA_LABEL: Record<number, string> = { 1:'Lunes', 2:'Martes', 3:'Miércoles', 4:'Jueves', 5:'Viernes', 6:'Sábado', 7:'Domingo' };
 
 function formatFecha(f: string) {
-    return new Date(f + 'T00:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+    return new Date(f + 'T00:00:00').toLocaleDateString('es-PE', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 }
 
 // ─── Componente ───────────────────────────────────────────────────────────────
@@ -126,7 +126,7 @@ export default function ReservasShow({ reserva }: Props) {
                         <div className="bg-orange-50 rounded-lg px-4 py-3 flex items-center justify-between">
                             <span className="text-sm text-secondary font-medium">Monto pagado</span>
                             <span className="text-xl font-bold text-primary">
-                                ${parseFloat(reserva.monto_pagado).toLocaleString('es-AR')}
+                                S/ {parseFloat(reserva.monto_pagado).toLocaleString('es-PE')}
                             </span>
                         </div>
 

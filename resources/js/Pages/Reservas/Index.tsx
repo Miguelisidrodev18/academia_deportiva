@@ -44,7 +44,7 @@ const ESTADO_LABEL: Record<string, string> = {
 };
 
 function formatFecha(f: string) {
-    return new Date(f + 'T00:00:00').toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' });
+    return new Date(f + 'T00:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
 // ─── Componente ───────────────────────────────────────────────────────────────
@@ -141,7 +141,7 @@ export default function ReservasIndex({ reservas, espacios, filters }: Props) {
                                         <td className="px-4 py-3 text-muted">{formatFecha(r.fecha_reserva)}</td>
                                         <td className="px-4 py-3 text-muted">{r.rango_horario.hora_inicio}–{r.rango_horario.hora_fin}</td>
                                         <td className="px-4 py-3 text-right font-medium text-secondary">
-                                            ${parseFloat(r.monto_pagado).toLocaleString('es-AR')}
+                                            S/ {parseFloat(r.monto_pagado).toLocaleString('es-PE')}
                                         </td>
                                         <td className="px-4 py-3 text-center">
                                             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${ESTADO_BADGE[r.estado] ?? 'bg-gray-100 text-muted'}`}>

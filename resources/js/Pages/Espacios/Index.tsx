@@ -127,7 +127,7 @@ export default function EspaciosIndex({ espacios }: Props) {
                                                         </span>
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-muted">
-                                                                ${parseFloat(rango.precio).toLocaleString('es-AR')}
+                                                                S/ {parseFloat(rango.precio).toLocaleString('es-PE')}
                                                             </span>
                                                             <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
                                                                 rango.disponible ? 'bg-green-100 text-success' : 'bg-gray-100 text-muted'

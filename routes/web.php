@@ -7,8 +7,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EspacioController;
 use App\Http\Controllers\InscripcionController;
 use App\Http\Controllers\PagoController;
+use App\Http\Controllers\PrestamoEspecialController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservaController;
+use App\Http\Controllers\VentaProductoController;
 use App\Http\Controllers\TallerController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Foundation\Application;
@@ -73,6 +76,23 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('reservas/horarios-disponibles', [ReservaController::class, 'horariosDisponibles'])->name('reservas.horarios');
     // Autocomplete de alumnos (para el form de reservas)
     Route::get('alumnos/buscar', [AlumnoController::class, 'buscar'])->name('alumnos.buscar');
+
+    // ── Préstamos especiales de equipamiento ──────────────────────────────────
+    // Listado, nuevo préstamo y detalle
+    Route::resource('prestamos', PrestamoEspecialController::class)
+        ->only(['index', 'create', 'store', 'show'])
+        ->parameters(['prestamos' => 'prestamo']);
+    // Devolución parcial o total de ítems prestados
+    Route::get('prestamos/{prestamo}/devolucion', [PrestamoEspecialController::class, 'devolucion'])->name('prestamos.devolucion');
+    Route::patch('prestamos/{prestamo}/devolucion', [PrestamoEspecialController::class, 'updateDevolucion'])->name('prestamos.devolucion.update');
+
+    // ── Ventas de productos (kiosco/cantina) ──────────────────────────────────
+    // Catálogo de productos (solo dueño puede crear/editar/eliminar)
+    Route::resource('productos', ProductoController::class)
+        ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+    // Historial y registro de ventas (dueño + admin_caja)
+    Route::resource('ventas', VentaProductoController::class)
+        ->only(['index', 'create', 'store']);
 
     // Gestión de usuarios y roles (solo dueño)
     Route::resource('usuarios', UsuarioController::class)

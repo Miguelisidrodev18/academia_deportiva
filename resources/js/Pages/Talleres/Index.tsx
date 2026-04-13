@@ -124,7 +124,7 @@ export default function TalleresIndex({ talleres }: Props) {
                                             </div>
                                             <div className="flex items-center gap-1.5">
                                                 <span>💰</span>
-                                                <span>${parseFloat(t.precio_base).toLocaleString('es-AR')}</span>
+                                                <span>S/ {parseFloat(t.precio_base).toLocaleString('es-PE')}</span>
                                             </div>
                                         </div>
 

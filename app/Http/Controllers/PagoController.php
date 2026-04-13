@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alumno;
 use App\Models\Inscripcion;
+use App\Models\LogAuditoria;
 use App\Models\Pago;
 use App\Services\CuotaService;
 use Illuminate\Http\RedirectResponse;
@@ -92,7 +93,8 @@ class PagoController extends Controller
         ]);
 
         // Seguridad: verificar que la inscripción pertenece a esta academia
-        $inscripcion = Inscripcion::whereHas('alumno', function ($q) {
+        $inscripcion = Inscripcion::with(['alumno', 'taller'])
+            ->whereHas('alumno', function ($q) {
                 $q->where('academia_id', auth()->user()->academia_id);
             })
             ->where('activo', true)
@@ -108,6 +110,13 @@ class PagoController extends Controller
             'periodo_mes'              => $validated['periodo_mes'],
             'periodo_anio'             => $validated['periodo_anio'],
         ]);
+
+        // Registrar en el log de auditoría
+        $alumno = $inscripcion->alumno;
+        LogAuditoria::registrar(
+            'registro_pago',
+            "Pago de S/ {$validated['monto']} registrado para {$alumno->nombre} — taller «{$inscripcion->taller->nombre}» (período {$validated['periodo_mes']}/{$validated['periodo_anio']})"
+        );
 
         return redirect()->route('pagos.show', $pago->id)
             ->with('success', 'Pago registrado correctamente.');
