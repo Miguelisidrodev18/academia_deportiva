@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumno;
+use App\Models\Pago;
 use App\Models\Reserva;
 use App\Models\Taller;
 use Inertia\Inertia;
@@ -72,6 +73,23 @@ class DashboardController extends Controller
             ->take(6)
             ->get(['id', 'nombre', 'disciplina_id', 'cupo_maximo', 'nivel']);
 
+        // ── Pagos últimos 6 meses (para gráfico) ─────────────────────────────
+
+        $pagosMensuales = collect(range(5, 0))->map(function ($mesesAtras) use ($academiaId) {
+            $fecha = now()->subMonths($mesesAtras);
+            $total = Pago::whereHas('inscripcion.alumno', fn($q) =>
+                    $q->where('academia_id', $academiaId)
+                )
+                ->whereYear('fecha_pago', $fecha->year)
+                ->whereMonth('fecha_pago', $fecha->month)
+                ->sum('monto');
+
+            return [
+                'mes'   => $fecha->translatedFormat('M'),
+                'total' => (float) $total,
+            ];
+        });
+
         return Inertia::render('Dashboard', [
             'kpis' => [
                 'alumnos_activos' => $alumnosActivos,
@@ -79,9 +97,10 @@ class DashboardController extends Controller
                 'reservas_hoy' => $reservasHoy,
                 'deuda_total' => $deudaTotal,
             ],
-            'alumnos_con_deuda' => $alumnosConDeuda,
-            'reservas_hoy' => $reservasDelDia,
-            'talleres' => $talleres,
+            'alumnos_con_deuda'  => $alumnosConDeuda,
+            'reservas_hoy'       => $reservasDelDia,
+            'talleres'           => $talleres,
+            'pagos_mensuales'    => $pagosMensuales,
         ]);
     }
 }

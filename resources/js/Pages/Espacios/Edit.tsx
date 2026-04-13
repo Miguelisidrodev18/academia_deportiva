@@ -40,8 +40,8 @@ export default function EspaciosEdit({ espacio }: Props) {
         rangos_horarios: espacio.rangos_horarios.map(r => ({
             id: r.id,
             dia_semana: r.dia_semana,
-            hora_inicio: r.hora_inicio,
-            hora_fin: r.hora_fin,
+            hora_inicio: r.hora_inicio.substring(0, 5),
+            hora_fin: r.hora_fin.substring(0, 5),
             precio: r.precio,
             disponible: r.disponible,
         })),

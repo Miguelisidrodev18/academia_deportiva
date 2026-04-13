@@ -1,5 +1,8 @@
-import { Link, router, usePage } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
+import FlashMessages from '@/Components/FlashMessages';
+import PageHeader from '@/Components/PageHeader';
+import EmptyState from '@/Components/EmptyState';
 import { DIA_LABEL } from '@/utils/talleres';
 import { getSportIcon, NIVEL_GRADIENT, NIVEL_BADGE, NIVEL_LABEL } from '@/utils/sportIcons';
 
@@ -29,8 +32,6 @@ interface Props { talleres: Taller[]; }
 // ─── Componente ───────────────────────────────────────────────────────────────
 
 export default function TalleresIndex({ talleres }: Props) {
-    const { flash } = usePage().props as any;
-
     function handleEliminar(id: number, nombre: string) {
         if (!confirm(`¿Eliminar el taller "${nombre}"?`)) return;
         router.delete(route('talleres.destroy', id));
@@ -40,49 +41,25 @@ export default function TalleresIndex({ talleres }: Props) {
         <AppLayout title="Talleres">
             <div className="max-w-6xl mx-auto">
 
-                {/* Encabezado */}
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h1 className="text-2xl font-bold text-secondary">Talleres</h1>
-                        <p className="text-muted text-sm mt-1">
-                            {talleres.length > 0
-                                ? `${talleres.length} ${talleres.length === 1 ? 'taller registrado' : 'talleres registrados'}`
-                                : 'Clases y grupos organizados por disciplina.'}
-                        </p>
-                    </div>
-                    <Link
-                        href={route('talleres.create')}
-                        className="bg-primary hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                    >
-                        + Nuevo taller
-                    </Link>
-                </div>
+                <PageHeader
+                    title="Talleres"
+                    subtitle={talleres.length > 0
+                        ? `${talleres.length} ${talleres.length === 1 ? 'taller registrado' : 'talleres registrados'}`
+                        : 'Clases y grupos organizados por disciplina.'}
+                    ctaHref={route('talleres.create')}
+                    ctaLabel="+ Nuevo taller"
+                />
 
-                {/* Flash */}
-                {flash?.success && (
-                    <div className="bg-green-50 border border-success text-success rounded-lg px-4 py-3 mb-4 text-sm">
-                        {flash.success}
-                    </div>
-                )}
-                {flash?.error && (
-                    <div className="bg-red-50 border border-danger text-danger rounded-lg px-4 py-3 mb-4 text-sm">
-                        {flash.error}
-                    </div>
-                )}
+                <FlashMessages />
 
-                {/* Listado */}
                 {talleres.length === 0 ? (
-                    <div className="text-center py-20 text-muted">
-                        <p className="text-5xl mb-4">🏋️</p>
-                        <p className="text-lg font-medium">Todavía no hay talleres.</p>
-                        <p className="text-sm mt-1">Creá el primero para comenzar a inscribir alumnos.</p>
-                        <Link
-                            href={route('talleres.create')}
-                            className="inline-block mt-5 bg-primary text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors"
-                        >
-                            + Crear primer taller
-                        </Link>
-                    </div>
+                    <EmptyState
+                        icon="🏋️"
+                        title="Todavía no hay talleres"
+                        description="Creá el primero para comenzar a inscribir alumnos."
+                        ctaHref={route('talleres.create')}
+                        ctaLabel="+ Crear primer taller"
+                    />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                         {talleres.map((t) => {
