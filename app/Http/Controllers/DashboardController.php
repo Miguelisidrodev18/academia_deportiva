@@ -64,7 +64,7 @@ class DashboardController extends Controller
                 'mensaje' => $count === 1
                     ? '1 préstamo tiene la devolución atrasada.'
                     : "{$count} préstamos tienen la devolución atrasada.",
-                'href'    => '/prestamos?estado=atrasado',
+                'href'    => route('prestamos.index', ['estado' => 'atrasado'], false),
                 'label'   => 'Ver préstamos',
             ];
         }
@@ -78,7 +78,7 @@ class DashboardController extends Controller
             $alertas[] = [
                 'tipo'    => 'danger',
                 'mensaje' => 'Sin stock: ' . $sinStock->pluck('nombre')->join(', ') . '.',
-                'href'    => '/productos',
+                'href'    => route('productos.index', absolute: false),
                 'label'   => 'Ver productos',
             ];
         }
@@ -86,7 +86,7 @@ class DashboardController extends Controller
             $alertas[] = [
                 'tipo'    => 'warning',
                 'mensaje' => 'Stock bajo: ' . $bajo->pluck('nombre')->join(', ') . '.',
-                'href'    => '/productos',
+                'href'    => route('productos.index', absolute: false),
                 'label'   => 'Ver productos',
             ];
         }
@@ -100,7 +100,7 @@ class DashboardController extends Controller
                 'mensaje' => $count === 1
                     ? '1 alumno tiene 3 o más faltas injustificadas en los últimos 30 días.'
                     : "{$count} alumnos tienen 3 o más faltas injustificadas en los últimos 30 días.",
-                'href'    => '/asistencias',
+                'href'    => route('asistencias.index', absolute: false),
                 'label'   => 'Ver asistencias',
             ];
         }

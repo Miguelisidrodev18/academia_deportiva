@@ -22,8 +22,6 @@ import {
     DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 
-// ─── Tipos ────────────────────────────────────────────────────────────────────
-
 interface Props {
     title?: string;
     children: ReactNode;
@@ -31,7 +29,7 @@ interface Props {
 
 interface NavItem {
     label: string;
-    href?: string;
+    routeName?: string;
     Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
     badge?: string;
     roles?: string[];
@@ -42,125 +40,128 @@ interface NavGroup {
     items: NavItem[];
 }
 
-// ─── Grupos del Sidebar ───────────────────────────────────────────────────────
-
 const navGroups: NavGroup[] = [
     {
         items: [
-            { label: 'Dashboard',        href: '/dashboard',           Icon: Squares2X2Icon },
+            { label: 'Dashboard', routeName: 'dashboard', Icon: Squares2X2Icon },
         ],
     },
     {
-        label: 'GESTIÓN',
+        label: 'Gestion',
         items: [
-            { label: 'Disciplinas',      href: '/disciplinas',         Icon: TrophyIcon,                  roles: ['dueno'] },
-            { label: 'Talleres',         href: '/talleres',            Icon: AcademicCapIcon },
-            { label: 'Alumnos',          href: '/alumnos',             Icon: UserGroupIcon },
-            { label: 'Inscripciones',    href: '/inscripciones',       Icon: ClipboardDocumentListIcon },
-            { label: 'Pagos',            href: '/pagos',               Icon: CreditCardIcon },
+            { label: 'Disciplinas', routeName: 'disciplinas.index', Icon: TrophyIcon, roles: ['dueno'] },
+            { label: 'Talleres', routeName: 'talleres.index', Icon: AcademicCapIcon },
+            { label: 'Alumnos', routeName: 'alumnos.index', Icon: UserGroupIcon },
+            { label: 'Inscripciones', routeName: 'inscripciones.index', Icon: ClipboardDocumentListIcon },
+            { label: 'Pagos', routeName: 'pagos.index', Icon: CreditCardIcon },
         ],
     },
     {
-        label: 'ASISTENCIA',
+        label: 'Asistencia',
         items: [
-            { label: 'Escanear QR',      href: '/asistencia/escanear', Icon: QrCodeIcon,      roles: ['dueno', 'entrenador'] },
-            { label: 'Historial',        href: '/asistencias',         Icon: ClockIcon,        roles: ['dueno', 'entrenador'] },
+            { label: 'Escanear QR', routeName: 'asistencia.escanear', Icon: QrCodeIcon, roles: ['dueno', 'entrenador'] },
+            { label: 'Historial', routeName: 'asistencias.index', Icon: ClockIcon, roles: ['dueno', 'entrenador'] },
         ],
     },
     {
-        label: 'ALQUILERES',
+        label: 'Alquileres',
         items: [
-            { label: 'Reservas',         href: '/reservas',            Icon: BuildingOffice2Icon,        roles: ['dueno', 'admin_alquiler'] },
-            { label: 'Préstamos',        href: '/prestamos',           Icon: WrenchScrewdriverIcon,      roles: ['dueno', 'admin_alquiler'] },
+            { label: 'Reservas', routeName: 'reservas.index', Icon: BuildingOffice2Icon, roles: ['dueno', 'admin_alquiler'] },
+            { label: 'Prestamos', routeName: 'prestamos.index', Icon: WrenchScrewdriverIcon, roles: ['dueno', 'admin_alquiler'] },
         ],
     },
     {
-        label: 'VENTAS',
+        label: 'Ventas',
         items: [
-            { label: 'Ventas',           href: '/ventas',              Icon: ShoppingCartIcon,      roles: ['dueno', 'admin_caja'] },
-            { label: 'Productos',        href: '/productos',           Icon: WrenchScrewdriverIcon, roles: ['dueno'] },
+            { label: 'Ventas', routeName: 'ventas.index', Icon: ShoppingCartIcon, roles: ['dueno', 'admin_caja'] },
+            { label: 'Productos', routeName: 'productos.index', Icon: WrenchScrewdriverIcon, roles: ['dueno'] },
         ],
     },
     {
-        label: 'ADMINISTRACIÓN',
+        label: 'Administracion',
         items: [
-            { label: 'Usuarios',         href: '/usuarios',            Icon: UserCircleIcon,   roles: ['dueno'] },
-            { label: 'Logs',             href: '/logs',                Icon: DocumentTextIcon, roles: ['dueno'] },
-            { label: 'Reportes',         Icon: ChartBarIcon,            badge: 'Pronto',        roles: ['dueno'] },
-            { label: 'Configuración',    Icon: Cog6ToothIcon,           badge: 'Pronto',        roles: ['dueno'] },
+            { label: 'Usuarios', routeName: 'usuarios.index', Icon: UserCircleIcon, roles: ['dueno'] },
+            { label: 'Logs', routeName: 'logs.index', Icon: DocumentTextIcon, roles: ['dueno'] },
+            { label: 'Reportes', Icon: ChartBarIcon, badge: 'Pronto', roles: ['dueno'] },
+            { label: 'Configuracion', Icon: Cog6ToothIcon, badge: 'Pronto', roles: ['dueno'] },
         ],
     },
 ];
-
-// ─── Componente principal ─────────────────────────────────────────────────────
 
 export default function AppLayout({ title, children }: Props) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const { auth } = usePage<{ auth: { user: User & { rol: string; academia?: { nombre: string } } } }>().props;
     const user = auth.user;
-    const currentPath = window.location.pathname;
 
     const handleDisabledClick = (badge: string) => {
         const messages: Record<string, string> = {
-            'Pronto':          '🚀 Módulo disponible en la próxima versión',
-            'En construcción': '🔧 Este módulo está en construcción',
+            Pronto: 'Modulo disponible en la proxima version',
+            'En construccion': 'Este modulo esta en construccion',
         };
-        toast(messages[badge] ?? 'Módulo no disponible aún', { icon: '⚙️', duration: 3000 });
+
+        toast(messages[badge] ?? 'Modulo no disponible aun', { icon: '⚙️', duration: 3000 });
     };
 
     const rolLabel: Record<string, string> = {
-        dueno: 'Dueño', entrenador: 'Entrenador',
-        admin_caja: 'Admin Caja', admin_alquiler: 'Admin Alquiler', alumno: 'Alumno',
+        dueno: 'Dueno',
+        entrenador: 'Entrenador',
+        admin_caja: 'Admin Caja',
+        admin_alquiler: 'Admin Alquiler',
+        alumno: 'Alumno',
     };
 
     const SidebarContent = () => (
-        <div className="flex flex-col h-full">
-            {/* Marca */}
-            <div className="flex items-center gap-3 px-4 py-5 border-b border-slate-700/60">
-                <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-base flex-shrink-0 shadow-md">
-                    {(user?.academia?.nombre ?? 'A').charAt(0).toUpperCase()}
-                </div>
-                <div className="overflow-hidden">
-                    <p className="text-white font-semibold text-sm leading-tight truncate">
-                        {user?.academia?.nombre ?? 'Mi Academia'}
-                    </p>
-                    <p className="text-slate-400 text-[11px] mt-0.5 truncate">
-                        {rolLabel[user?.rol ?? ''] ?? user?.rol ?? 'usuario'}
-                    </p>
+        <div className="flex h-full flex-col">
+            <div className="border-b border-slate-700/60 px-4 py-5">
+                <div className="flex items-center gap-3">
+                    <div className="h-9 w-9 flex-shrink-0 rounded-xl bg-primary text-base font-bold text-white shadow-md flex items-center justify-center">
+                        {(user?.academia?.nombre ?? 'A').charAt(0).toUpperCase()}
+                    </div>
+                    <div className="overflow-hidden">
+                        <p className="truncate text-sm font-semibold leading-tight text-white">
+                            {user?.academia?.nombre ?? 'Mi Academia'}
+                        </p>
+                        <p className="mt-0.5 truncate text-[11px] text-slate-400">
+                            {rolLabel[user?.rol ?? ''] ?? user?.rol ?? 'usuario'}
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            {/* Navegación */}
-            <nav className="flex-1 px-3 py-3 overflow-y-auto space-y-4">
+            <nav className="flex-1 space-y-4 overflow-y-auto px-3 py-3">
                 {navGroups.map((group, gi) => {
                     const visibleItems = group.items.filter(
-                        item => !item.roles || item.roles.includes(user?.rol ?? '')
+                        (item) => !item.roles || item.roles.includes(user?.rol ?? ''),
                     );
-                    if (visibleItems.length === 0) return null;
+
+                    if (visibleItems.length === 0) {
+                        return null;
+                    }
 
                     return (
                         <div key={gi}>
                             {group.label && (
-                                <p className="px-2 mb-1 text-[10px] font-semibold text-slate-500 tracking-widest uppercase">
+                                <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-widest text-slate-500">
                                     {group.label}
                                 </p>
                             )}
                             <div className="space-y-0.5">
-                                {visibleItems.map(item => {
-                                    const isActive = item.href && currentPath.startsWith(item.href);
-                                    const isDisabled = !item.href;
+                                {visibleItems.map((item) => {
+                                    const href = item.routeName ? route(item.routeName) : undefined;
+                                    const isActive = item.routeName ? route().current(item.routeName) : false;
+                                    const isDisabled = !href;
 
                                     if (isDisabled) {
                                         return (
                                             <button
                                                 key={item.label}
                                                 onClick={() => handleDisabledClick(item.badge!)}
-                                                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-slate-500 hover:bg-slate-700/50 transition-colors text-[13px] text-left group"
+                                                className="group flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] text-slate-500 transition-colors hover:bg-slate-700/50"
                                             >
-                                                <item.Icon className="w-4 h-4 flex-shrink-0" />
+                                                <item.Icon className="h-4 w-4 flex-shrink-0" />
                                                 <span className="flex-1">{item.label}</span>
-                                                <span className="text-[10px] bg-slate-700 text-slate-400 px-1.5 py-0.5 rounded-full">
+                                                <span className="rounded-full bg-slate-700 px-1.5 py-0.5 text-[10px] text-slate-400">
                                                     {item.badge}
                                                 </span>
                                             </button>
@@ -170,15 +171,15 @@ export default function AppLayout({ title, children }: Props) {
                                     return (
                                         <Link
                                             key={item.label}
-                                            href={item.href!}
+                                            href={href}
                                             onClick={() => setSidebarOpen(false)}
-                                            className={`flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all text-[13px] ${
+                                            className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] transition-all ${
                                                 isActive
-                                                    ? 'bg-primary text-white font-medium shadow-sm'
+                                                    ? 'bg-primary font-medium text-white shadow-sm'
                                                     : 'text-slate-300 hover:bg-slate-700/60 hover:text-white'
                                             }`}
                                         >
-                                            <item.Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                                            <item.Icon className={`h-4 w-4 flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                                             <span>{item.label}</span>
                                         </Link>
                                     );
@@ -189,61 +190,63 @@ export default function AppLayout({ title, children }: Props) {
                 })}
             </nav>
 
-            {/* Footer */}
             <div className="border-t border-slate-700/60 px-3 py-3">
-                <div className="flex items-center gap-2.5 px-2 py-1.5 mb-1">
-                    <div className="w-7 h-7 rounded-full bg-slate-600 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                <div className="mb-1 flex items-center gap-2.5 px-2 py-1.5">
+                    <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-slate-600 text-xs font-semibold text-white">
                         {(user?.name ?? 'U').charAt(0).toUpperCase()}
                     </div>
-                    <div className="overflow-hidden flex-1">
-                        <p className="text-white text-xs font-medium truncate">{user?.name}</p>
-                        <p className="text-slate-400 text-[10px] truncate">{user?.email}</p>
+                    <div className="flex-1 overflow-hidden">
+                        <p className="truncate text-xs font-medium text-white">{user?.name}</p>
+                        <p className="truncate text-[10px] text-slate-400">{user?.email}</p>
                     </div>
                 </div>
                 <Link
                     href={route('logout')}
                     method="post"
                     as="button"
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors text-[13px]"
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-slate-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
                 >
-                    <ArrowLeftStartOnRectangleIcon className="w-4 h-4" />
-                    <span>Cerrar sesión</span>
+                    <ArrowLeftStartOnRectangleIcon className="h-4 w-4" />
+                    <span>Cerrar sesion</span>
                 </Link>
             </div>
         </div>
     );
 
     return (
-        <div className="flex h-screen bg-gray-50 overflow-hidden">
+        <div className="flex h-screen overflow-hidden bg-gray-50">
+            <title>{title ? `${title} - Academia Deportiva` : 'Academia Deportiva'}</title>
             <Toaster position="top-right" toastOptions={{ className: 'text-sm' }} />
 
-            {/* Sidebar desktop */}
-            <aside className="hidden md:flex md:flex-col md:w-60 bg-secondary flex-shrink-0 shadow-xl">
+            <aside className="hidden w-60 flex-shrink-0 bg-secondary shadow-xl md:flex md:flex-col">
                 <SidebarContent />
             </aside>
 
-            {/* Sidebar mobile overlay */}
             {sidebarOpen && (
                 <>
-                    <div className="fixed inset-0 bg-black/50 z-20 md:hidden backdrop-blur-sm"
-                        onClick={() => setSidebarOpen(false)} />
-                    <aside className="fixed inset-y-0 left-0 w-60 bg-secondary z-30 flex flex-col md:hidden shadow-2xl">
+                    <div
+                        className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm md:hidden"
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                    <aside className="fixed inset-y-0 left-0 z-30 flex w-60 flex-col bg-secondary shadow-2xl md:hidden">
                         <SidebarContent />
                     </aside>
                 </>
             )}
 
-            {/* Contenido principal */}
-            <div className="flex flex-col flex-1 overflow-hidden">
-                {/* Header mobile */}
-                <header className="md:hidden bg-secondary text-white px-4 py-3 flex items-center gap-3 flex-shrink-0 shadow-md">
-                    <button onClick={() => setSidebarOpen(true)} className="text-white p-1 rounded-md hover:bg-slate-700 transition-colors">
-                        <Bars3Icon className="w-5 h-5" />
+            <div className="flex flex-1 flex-col overflow-hidden">
+                <header className="flex flex-shrink-0 items-center gap-3 bg-secondary px-4 py-3 text-white shadow-md md:hidden">
+                    <button
+                        onClick={() => setSidebarOpen(true)}
+                        className="rounded-md p-1 text-white transition-colors hover:bg-slate-700"
+                    >
+                        <Bars3Icon className="h-5 w-5" />
                     </button>
-                    <span className="font-semibold text-sm flex-1 truncate">{user?.academia?.nombre ?? 'Academia Deportiva'}</span>
+                    <span className="flex-1 truncate text-sm font-semibold">
+                        {user?.academia?.nombre ?? 'Academia Deportiva'}
+                    </span>
                 </header>
 
-                {/* Área de contenido scrollable */}
                 <main className="flex-1 overflow-y-auto p-6">
                     {children}
                 </main>
