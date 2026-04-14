@@ -111,6 +111,14 @@ export default function AppLayout({ title, children }: Props) {
         alumno: 'Alumno',
     };
 
+    const safeRoute = (name?: string) => {
+        if (!name || !route().has(name)) {
+            return null;
+        }
+
+        return route(name);
+    };
+
     const SidebarContent = () => (
         <div className="flex h-full flex-col">
             <div className="border-b border-slate-700/60 px-4 py-5">
@@ -148,7 +156,7 @@ export default function AppLayout({ title, children }: Props) {
                             )}
                             <div className="space-y-0.5">
                                 {visibleItems.map((item) => {
-                                    const href = item.routeName ? route(item.routeName) : undefined;
+                                    const href = safeRoute(item.routeName) ?? undefined;
                                     const isActive = item.routeName ? route().current(item.routeName) : false;
                                     const isDisabled = !href;
 
