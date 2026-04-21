@@ -28,6 +28,7 @@
     },
     "dependencies": {
         "@heroicons/react": "^2.2.0",
+        "framer-motion": "^12.38.0",
         "html5-qrcode": "^2.3.8",
         "react-hot-toast": "^2.6.0",
         "react-qr-code": "^2.0.18",
