@@ -184,11 +184,11 @@ export default function AppLayout({ title, children }: Props) {
                                             onClick={() => setSidebarOpen(false)}
                                             className={`group flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[13px] transition-all duration-300 ${
                                                 isActive
-                                                    ? 'border-l-2 border-primary bg-gradient-to-r from-primary/20 to-transparent pl-[10px] font-semibold text-white shadow-[0_0_12px_rgba(249,115,22,0.12)]'
-                                                    : 'text-slate-400 hover:bg-white/[0.06] hover:text-white'
+                                                    ? 'border-l-2 border-green-400 bg-green-500/10 pl-[10px] font-semibold text-white shadow-[0_0_12px_rgba(74,222,128,0.15)]'
+                                                    : 'text-slate-400 hover:bg-white/5 hover:text-white'
                                             }`}
                                         >
-                                            <item.Icon className={`h-4 w-4 flex-shrink-0 transition-colors ${isActive ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                                            <item.Icon className={`h-4 w-4 flex-shrink-0 transition-colors ${isActive ? 'text-green-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
                                             <span>{item.label}</span>
                                         </Link>
                                     );
@@ -226,11 +226,11 @@ export default function AppLayout({ title, children }: Props) {
     );
 
     return (
-        <div className="flex h-screen overflow-hidden bg-[#070f08]">
+        <div className="flex h-screen overflow-hidden bg-[#020617]">
             <title>{title ? `${title} - Academia Deportiva` : 'Academia Deportiva'}</title>
             <Toaster position="top-right" toastOptions={{ className: 'text-sm' }} />
 
-            <aside className="hidden w-60 flex-shrink-0 bg-gradient-to-b from-[#0c2211] to-[#071409] border-r border-green-900/40 shadow-[2px_0_30px_rgba(20,83,45,0.22),2px_0_80px_rgba(20,83,45,0.08)] md:flex md:flex-col">
+            <aside className="hidden w-60 flex-shrink-0 bg-gradient-to-b from-[#060d08] to-[#030805] border-r border-green-900/30 shadow-[2px_0_40px_rgba(0,0,0,0.60),2px_0_80px_rgba(20,83,45,0.08)] md:flex md:flex-col">
                 <SidebarContent />
             </aside>
 
@@ -240,14 +240,14 @@ export default function AppLayout({ title, children }: Props) {
                         className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm md:hidden"
                         onClick={() => setSidebarOpen(false)}
                     />
-                    <aside className="fixed inset-y-0 left-0 z-30 flex w-60 flex-col bg-gradient-to-b from-[#0c2211] to-[#071409] border-r border-green-900/40 shadow-[2px_0_30px_rgba(20,83,45,0.22)] md:hidden">
+                    <aside className="fixed inset-y-0 left-0 z-30 flex w-60 flex-col bg-gradient-to-b from-[#060d08] to-[#030805] border-r border-green-900/30 shadow-[2px_0_40px_rgba(0,0,0,0.60)] md:hidden">
                         <SidebarContent />
                     </aside>
                 </>
             )}
 
             <div className="flex flex-1 flex-col overflow-hidden">
-                <header className="flex flex-shrink-0 items-center gap-3 bg-[#0c2211] px-4 py-3 text-white shadow-md md:hidden">
+                <header className="flex flex-shrink-0 items-center gap-3 bg-gradient-to-r from-green-900/80 to-[#060d08] px-4 py-4 text-white shadow-lg border-b border-green-900/30 md:hidden">
                     <button
                         onClick={() => setSidebarOpen(true)}
                         className="rounded-md p-1 text-white transition-colors hover:bg-slate-700"
@@ -262,17 +262,20 @@ export default function AppLayout({ title, children }: Props) {
                 <main
                     className="flex-1 overflow-y-auto p-6"
                     style={{
-                        backgroundColor: '#060e07',
+                        backgroundColor: '#020617',
                         backgroundImage: [
+                            /* iluminación global — foco cenital verde */
+                            'radial-gradient(circle at top, rgba(34,197,94,0.12), transparent 70%)',
+                            /* acento inferior suave */
+                            'radial-gradient(circle at bottom, rgba(34,197,94,0.08), transparent 70%)',
                             /* focos de estadio desde arriba */
-                            'radial-gradient(ellipse 100% 40% at 50% -3%, rgba(34,197,94,0.16) 0%, transparent 58%)',
+                            'radial-gradient(ellipse 100% 40% at 50% -3%, rgba(34,197,94,0.18) 0%, transparent 58%)',
                             /* glows de esquina */
-                            'radial-gradient(ellipse 70% 50% at 88% 0%,   rgba(20,83,45,0.32) 0%, transparent 55%)',
-                            'radial-gradient(ellipse 50% 40% at 12% 100%, rgba(20,83,45,0.22) 0%, transparent 50%)',
-                            'radial-gradient(ellipse 35% 30% at 55% 55%,  rgba(20,83,45,0.10) 0%, transparent 45%)',
-                            /* cuadrícula de campo */
-                            'repeating-linear-gradient(90deg, transparent 0, transparent 80px, rgba(255,255,255,0.016) 80px, rgba(255,255,255,0.016) 81px)',
-                            'repeating-linear-gradient(0deg,  transparent 0, transparent 60px, rgba(255,255,255,0.010) 60px, rgba(255,255,255,0.010) 61px)',
+                            'radial-gradient(ellipse 70% 50% at 88% 0%,   rgba(20,83,45,0.28) 0%, transparent 55%)',
+                            'radial-gradient(ellipse 50% 40% at 12% 100%, rgba(20,83,45,0.20) 0%, transparent 50%)',
+                            /* cuadrícula de campo — opacity 0.20 */
+                            'repeating-linear-gradient(90deg, transparent 0, transparent 80px, rgba(255,255,255,0.20) 80px, rgba(255,255,255,0.20) 81px)',
+                            'repeating-linear-gradient(0deg,  transparent 0, transparent 60px, rgba(255,255,255,0.15) 60px, rgba(255,255,255,0.15) 61px)',
                         ].join(','),
                     }}
                 >

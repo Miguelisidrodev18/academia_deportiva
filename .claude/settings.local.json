@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(grep -v \".php:$\")"
+      "Bash(grep -v \".php:$\")",
+      "Bash(npx tsc *)"
     ]
   }
 }

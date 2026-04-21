@@ -1,8 +1,26 @@
 import { Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import StatCard from '@/Components/StatCard';
+import { CampoSVG, BalonSVG } from '@/Components/HeroAssets';
 import { avatarColor } from '@/utils/ui';
-import { getSportIcon, NIVEL_BADGE, NIVEL_LABEL } from '@/utils/sportIcons';
+import { NIVEL_BADGE, NIVEL_LABEL } from '@/utils/sportIcons';
+import {
+    Users,
+    Dumbbell,
+    Building2,
+    DollarSign,
+    ShoppingCart,
+    UserPlus,
+    CalendarPlus,
+    Package,
+    QrCode,
+    CreditCard,
+    CalendarDays,
+    CalendarOff,
+    CheckCircle2,
+    TrendingUp,
+    Layers,
+} from 'lucide-react';
 import {
     Area,
     AreaChart,
@@ -111,34 +129,84 @@ export default function Dashboard({
         : undefined;
 
     const maxVentas = top_productos[0]?.total_cantidad ?? 1;
+
     const accesosRapidos = [
-        { href: safeRoute('alumnos.create'), icon: '👤', label: 'Nuevo alumno', bg: 'bg-blue-500/10', hover: 'hover:bg-blue-500/20' },
-        { href: safeRoute('reservas.create'), icon: '🏟️', label: 'Nueva reserva', bg: 'bg-violet-500/10', hover: 'hover:bg-violet-500/20' },
-        { href: safeRoute('ventas.create'), icon: '🛒', label: 'Registrar venta', bg: 'bg-orange-500/10', hover: 'hover:bg-orange-500/20' },
-        { href: safeRoute('prestamos.create'), icon: '📦', label: 'Nuevo prestamo', bg: 'bg-yellow-500/10', hover: 'hover:bg-yellow-500/20' },
-        { href: safeRoute('asistencia.escanear'), icon: '📷', label: 'Escanear QR', bg: 'bg-emerald-500/10', hover: 'hover:bg-emerald-500/20' },
-        { href: safeRoute('pagos.create'), icon: '💳', label: 'Registrar pago', bg: 'bg-slate-500/10', hover: 'hover:bg-slate-500/20' },
+        {
+            href: safeRoute('alumnos.create'),
+            Icon: UserPlus,
+            label: 'Nuevo alumno',
+            bg: 'bg-blue-500/10',
+            hover: 'hover:bg-blue-500/20',
+            iconColor: 'text-blue-400',
+            glow: 'hover:shadow-[0_0_20px_rgba(59,130,246,0.25)]',
+        },
+        {
+            href: safeRoute('reservas.create'),
+            Icon: CalendarPlus,
+            label: 'Nueva reserva',
+            bg: 'bg-violet-500/10',
+            hover: 'hover:bg-violet-500/20',
+            iconColor: 'text-violet-400',
+            glow: 'hover:shadow-[0_0_20px_rgba(139,92,246,0.25)]',
+        },
+        {
+            href: safeRoute('ventas.create'),
+            Icon: ShoppingCart,
+            label: 'Registrar venta',
+            bg: 'bg-orange-500/10',
+            hover: 'hover:bg-orange-500/20',
+            iconColor: 'text-orange-400',
+            glow: 'hover:shadow-[0_0_20px_rgba(249,115,22,0.25)]',
+        },
+        {
+            href: safeRoute('prestamos.create'),
+            Icon: Package,
+            label: 'Nuevo prestamo',
+            bg: 'bg-yellow-500/10',
+            hover: 'hover:bg-yellow-500/20',
+            iconColor: 'text-yellow-400',
+            glow: 'hover:shadow-[0_0_20px_rgba(234,179,8,0.25)]',
+        },
+        {
+            href: safeRoute('asistencia.escanear'),
+            Icon: QrCode,
+            label: 'Escanear QR',
+            bg: 'bg-emerald-500/10',
+            hover: 'hover:bg-emerald-500/20',
+            iconColor: 'text-emerald-400',
+            glow: 'hover:shadow-[0_0_20px_rgba(52,211,153,0.25)]',
+        },
+        {
+            href: safeRoute('pagos.create'),
+            Icon: CreditCard,
+            label: 'Registrar pago',
+            bg: 'bg-slate-500/10',
+            hover: 'hover:bg-slate-500/20',
+            iconColor: 'text-slate-400',
+            glow: 'hover:shadow-[0_0_20px_rgba(148,163,184,0.20)]',
+        },
     ].filter((link): link is typeof link & { href: string } => Boolean(link.href));
 
     return (
         <AppLayout title="Dashboard">
             {/* ══ HERO BANNER ══ */}
-            <div className="relative mb-6 overflow-hidden rounded-2xl border border-green-500/25 shadow-[0_0_60px_rgba(20,83,45,0.45),0_0_120px_rgba(20,83,45,0.15)]">
+            <div className="relative mb-6 overflow-hidden rounded-2xl border border-green-400/35 shadow-[0_0_0_1px_rgba(34,197,94,0.08),0_0_70px_rgba(20,83,45,0.55),0_0_140px_rgba(20,83,45,0.20)]">
 
                 {/* Imagen de cancha */}
-                <img
-                    src="/images/campo.svg"
-                    alt="" aria-hidden
-                    className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
+                <CampoSVG
+                    aria-hidden
+                    className="absolute inset-0 h-full w-full pointer-events-none"
                     style={{ opacity: 0.55 }}
                 />
 
+                {/* Overlay verde protagonista desde la izquierda */}
+                <div className="absolute inset-0 bg-gradient-to-r from-green-900/80 via-green-800/40 to-transparent pointer-events-none" />
                 {/* Gradiente oscuro horizontal — legibilidad texto */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/10 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-black/5 pointer-events-none" />
                 {/* Gradiente vertical — profundidad inferior */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/55 pointer-events-none" />
 
-                {/* Luces de estadio desde arriba (focos) */}
+                {/* Luces de estadio desde arriba */}
                 <div className="absolute inset-0 pointer-events-none"
                     style={{ background: 'radial-gradient(ellipse 100% 55% at 50% -8%, rgba(34,197,94,0.20) 0%, transparent 62%)' }}
                 />
@@ -147,33 +215,33 @@ export default function Dashboard({
                     style={{ background: 'radial-gradient(ellipse 40% 80% at 98% 50%, rgba(249,115,22,0.12) 0%, transparent 65%)' }}
                 />
 
-                {/* ── Balón con glow verde ── */}
-                <img
-                    src="/images/balon.svg"
-                    alt="" aria-hidden
+                {/* Balón con glow verde */}
+                <BalonSVG
+                    aria-hidden
                     className="pointer-events-none absolute -bottom-6 -right-6 h-48 w-48 select-none"
                     style={{
                         opacity: 0.88,
                         transform: 'rotate(-18deg)',
                         filter: [
-                            'drop-shadow(0 0 32px rgba(34,197,94,0.40))',
-                            'drop-shadow(0 0 12px rgba(255,255,255,0.12))',
-                            'drop-shadow(0 12px 22px rgba(0,0,0,0.65))',
+                            'drop-shadow(0 0 60px rgba(34,197,94,0.60))',
+                            'drop-shadow(0 0 28px rgba(34,197,94,0.35))',
+                            'drop-shadow(0 0 12px rgba(255,255,255,0.15))',
+                            'drop-shadow(0 14px 28px rgba(0,0,0,0.70))',
                         ].join(' '),
                     }}
                 />
 
                 {/* Contenido */}
-                <div className="relative flex items-center px-7 py-8">
+                <div className="relative flex items-center px-8 py-12 min-h-[180px]">
                     <div>
-                        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.22em] text-green-400/75">
+                        <p className="mb-2.5 text-[10px] font-bold uppercase tracking-[0.25em] text-green-400/80">
                             Panel de control
                         </p>
-                        <h1 className="text-3xl font-black tracking-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.70)]">
+                        <h1 className="text-4xl font-black tracking-tight text-white drop-shadow-[0_2px_16px_rgba(0,0,0,0.80)]">
                             Bienvenido al panel
                         </h1>
                         <p className="mt-2.5 flex items-center gap-2 text-sm capitalize text-slate-300/80">
-                            <span className="text-base leading-none">📅</span>
+                            <CalendarDays className="w-4 h-4 text-green-400/70 flex-shrink-0" strokeWidth={1.75} />
                             {new Date().toLocaleDateString('es-PE', {
                                 weekday: 'long',
                                 day: 'numeric',
@@ -213,35 +281,68 @@ export default function Dashboard({
 
             {/* KPI Cards */}
             <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-                <StatCard icon="👥" label="Alumnos activos" value={kpis.alumnos_activos} accent="border-l-blue-500" iconBg="bg-blue-500/20" />
-                <StatCard icon="🏋️" label="Talleres" value={kpis.talleres_activos} accent="border-l-emerald-500" iconBg="bg-emerald-500/20" />
-                <StatCard icon="🏟️" label="Reservas hoy" value={kpis.reservas_hoy} accent="border-l-violet-500" iconBg="bg-violet-500/20" />
                 <StatCard
-                    icon="💰"
+                    icon={Users}
+                    iconColor="text-blue-400"
+                    label="Alumnos activos"
+                    value={kpis.alumnos_activos}
+                    accent="border-l-blue-500"
+                    iconBg="bg-blue-500/10"
+                    iconGlow="shadow-blue-500/20"
+                />
+                <StatCard
+                    icon={Dumbbell}
+                    iconColor="text-emerald-400"
+                    label="Talleres"
+                    value={kpis.talleres_activos}
+                    accent="border-l-emerald-500"
+                    iconBg="bg-emerald-500/10"
+                    iconGlow="shadow-emerald-500/20"
+                />
+                <StatCard
+                    icon={Building2}
+                    iconColor="text-violet-400"
+                    label="Reservas hoy"
+                    value={kpis.reservas_hoy}
+                    accent="border-l-violet-500"
+                    iconBg="bg-violet-500/10"
+                    iconGlow="shadow-violet-500/20"
+                />
+                <StatCard
+                    icon={DollarSign}
+                    iconColor={kpis.deuda_total > 0 ? 'text-red-400' : 'text-green-400'}
                     label="Deuda pendiente"
                     value={formatPesos(kpis.deuda_total)}
                     valueClass={kpis.deuda_total > 0 ? 'text-danger' : 'text-success'}
                     accent={kpis.deuda_total > 0 ? 'border-l-danger' : 'border-l-success'}
-                    iconBg={kpis.deuda_total > 0 ? 'bg-red-500/20' : 'bg-green-500/20'}
+                    iconBg={kpis.deuda_total > 0 ? 'bg-red-500/10' : 'bg-green-500/10'}
+                    iconGlow={kpis.deuda_total > 0 ? 'shadow-red-500/20' : 'shadow-green-500/20'}
                     sub={kpis.deuda_total > 0 ? 'requiere atencion' : 'todo al dia'}
                 />
                 <StatCard
-                    icon="🛒"
+                    icon={ShoppingCart}
+                    iconColor="text-orange-400"
                     label="Ventas del mes"
                     value={formatPesos(kpis.ventas_mes)}
                     accent="border-l-orange-400"
-                    iconBg="bg-orange-500/20"
+                    iconBg="bg-orange-500/10"
+                    iconGlow="shadow-orange-500/20"
                     sub={kpis.ventas_mes > 0 ? 'kiosco / cantina' : 'sin ventas aun'}
                 />
             </div>
 
             {/* Chart + Accesos rapidos */}
             <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-                <div className="rounded-2xl border border-green-500/10 bg-white/5 backdrop-blur-lg p-5 shadow-[0_4px_24px_rgba(0,0,0,0.40)] lg:col-span-2">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl p-6 shadow-lg shadow-black/40 lg:col-span-2 transition-all duration-300 hover:scale-[1.01] hover:border-green-400/30 hover:shadow-[0_0_40px_rgba(74,222,128,0.18)]">
                     <div className="mb-4 flex items-start justify-between">
-                        <div>
-                            <h2 className="font-bold text-white">Ingresos por cuotas</h2>
-                            <p className="mt-0.5 text-xs text-slate-500">Ultimos 6 meses</p>
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-green-500/10 shadow-lg shadow-green-500/20 flex items-center justify-center flex-shrink-0">
+                                <TrendingUp className="w-4 h-4 text-green-400" strokeWidth={1.75} />
+                            </div>
+                            <div>
+                                <h2 className="font-bold text-white">Ingresos por cuotas</h2>
+                                <p className="mt-0.5 text-xs text-gray-400">Ultimos 6 meses</p>
+                            </div>
                         </div>
                         <div className="text-right">
                             <p className="text-lg font-black text-white">{formatPesos(totalMesActual)}</p>
@@ -252,12 +353,12 @@ export default function Dashboard({
                             )}
                         </div>
                     </div>
-                    <ResponsiveContainer width="100%" height={200}>
+                    <ResponsiveContainer width="100%" height={240}>
                         <AreaChart data={pagos_mensuales} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#F97316" stopOpacity={0.3} />
-                                    <stop offset="95%" stopColor="#F97316" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="#22c55e" stopOpacity={0.35} />
+                                    <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="#1a2d1e" />
@@ -274,33 +375,35 @@ export default function Dashboard({
                                     fontSize: 12,
                                     borderRadius: 8,
                                     background: '#0f1f14',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: '1px solid rgba(34,197,94,0.2)',
                                     color: '#fff',
                                 }}
                             />
                             <Area
                                 type="monotone"
                                 dataKey="total"
-                                stroke="#F97316"
+                                stroke="#22c55e"
                                 strokeWidth={2.5}
                                 fill="url(#colorTotal)"
-                                dot={{ r: 3, fill: '#F97316' }}
-                                activeDot={{ r: 5 }}
+                                dot={{ r: 3, fill: '#22c55e' }}
+                                activeDot={{ r: 5, fill: '#4ade80' }}
                             />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
 
-                <div className="rounded-2xl border border-green-500/10 bg-white/5 backdrop-blur-lg p-5 shadow-[0_4px_24px_rgba(0,0,0,0.40)]">
+                <div className="rounded-2xl border border-green-500/15 bg-white/[0.08] backdrop-blur-xl p-5 shadow-lg shadow-black/40 transition-all duration-300 hover:scale-[1.02] hover:border-green-400/30 hover:shadow-[0_0_40px_rgba(74,222,128,0.18)]">
                     <h2 className="mb-4 font-bold text-white">Accesos rapidos</h2>
                     <div className="grid grid-cols-2 gap-3">
                         {accesosRapidos.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className={`flex flex-col items-center justify-center gap-2 rounded-xl p-3 text-center transition-all duration-300 border border-green-500/5 hover:scale-105 hover:border-green-500/30 hover:bg-white/10 hover:shadow-[0_0_22px_rgba(74,222,128,0.18)] ${link.bg} ${link.hover}`}
+                                className={`flex flex-col items-center justify-center gap-2.5 rounded-xl p-3.5 text-center transition-all duration-300 border border-white/5 hover:scale-105 hover:border-white/15 ${link.bg} ${link.hover} ${link.glow}`}
                             >
-                                <span className="text-2xl">{link.icon}</span>
+                                <div className={`w-9 h-9 rounded-xl ${link.bg} flex items-center justify-center`}>
+                                    <link.Icon className={`w-4 h-4 ${link.iconColor}`} strokeWidth={1.75} />
+                                </div>
                                 <span className="text-xs font-medium leading-tight text-slate-300">{link.label}</span>
                             </Link>
                         ))}
@@ -311,21 +414,23 @@ export default function Dashboard({
             {/* Bottom 3 cards */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 {/* Reservas hoy */}
-                <div className="rounded-2xl border border-green-500/10 bg-white/5 backdrop-blur-lg p-5 shadow-[0_4px_24px_rgba(0,0,0,0.40)]">
+                <div className="rounded-2xl border border-violet-500/10 bg-[rgba(139,92,246,0.04)] backdrop-blur-xl p-5 shadow-lg shadow-black/40 transition-all duration-300 hover:scale-[1.02] hover:border-green-400/30 hover:shadow-[0_0_40px_rgba(74,222,128,0.15)]">
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="flex items-center gap-2 font-bold text-white">
                             <span className="h-[5px] w-[5px] rounded-full bg-violet-400 flex-shrink-0" />
                             Reservas de hoy
                         </h2>
                         {safeRoute('reservas.index') && (
-                            <Link href={safeRoute('reservas.index')!} className="text-xs text-primary transition-colors hover:text-orange-300">
+                            <Link href={safeRoute('reservas.index')!} className="text-xs text-green-400 transition-colors hover:text-green-300">
                                 Ver todas →
                             </Link>
                         )}
                     </div>
                     {reservas_hoy.length === 0 ? (
-                        <div className="py-8 text-center">
-                            <p className="mb-2 text-3xl">🏟️</p>
+                        <div className="py-8 text-center flex flex-col items-center gap-3">
+                            <div className="w-14 h-14 rounded-2xl bg-violet-500/10 shadow-lg shadow-violet-500/20 flex items-center justify-center">
+                                <CalendarOff className="w-6 h-6 text-violet-400/70" strokeWidth={1.5} />
+                            </div>
                             <p className="text-sm text-slate-500">Sin reservas para hoy</p>
                         </div>
                     ) : (
@@ -347,7 +452,7 @@ export default function Dashboard({
                                             <p className="text-sm font-medium text-slate-200 transition-colors group-hover:text-primary">
                                                 {r.espacio.nombre}
                                             </p>
-                                            <p className="text-xs text-slate-500">
+                                            <p className="text-xs text-gray-400">
                                                 {r.rango_horario.hora_inicio}-{r.rango_horario.hora_fin}
                                                 {' · '}
                                                 {r.tipo_cliente === 'alumno' && r.alumno ? r.alumno.nombre : r.cliente_nombre ?? 'Externo'}
@@ -364,16 +469,16 @@ export default function Dashboard({
                 </div>
 
                 {/* Top productos / Talleres */}
-                <div className="rounded-2xl border border-green-500/10 bg-white/5 backdrop-blur-lg p-5 shadow-[0_4px_24px_rgba(0,0,0,0.40)]">
+                <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] backdrop-blur-xl p-5 shadow-lg shadow-black/40 transition-all duration-300 hover:scale-[1.02] hover:border-green-400/30 hover:shadow-[0_0_40px_rgba(74,222,128,0.15)]">
                     {top_productos.length > 0 ? (
                         <>
                             <div className="mb-4 flex items-center justify-between">
                                 <h2 className="flex items-center gap-2 font-bold text-white">
-                                <span className="h-[5px] w-[5px] rounded-full bg-primary flex-shrink-0" />
-                                Top productos del mes
-                            </h2>
+                                    <span className="h-[5px] w-[5px] rounded-full bg-primary flex-shrink-0" />
+                                    Top productos del mes
+                                </h2>
                                 {safeRoute('ventas.index') && (
-                                    <Link href={safeRoute('ventas.index')!} className="text-xs text-primary transition-colors hover:text-orange-300">
+                                    <Link href={safeRoute('ventas.index')!} className="text-xs text-green-400 transition-colors hover:text-green-300">
                                         Ver ventas →
                                     </Link>
                                 )}
@@ -386,7 +491,7 @@ export default function Dashboard({
                                             <div className="mb-1 flex items-center justify-between">
                                                 <span className="truncate text-xs font-medium text-slate-200">{p.nombre}</span>
                                                 <div className="ml-2 flex shrink-0 gap-2">
-                                                    <span className="text-[10px] text-slate-500">{p.total_cantidad} und.</span>
+                                                    <span className="text-[10px] text-gray-400">{p.total_cantidad} und.</span>
                                                     <span className="text-[10px] font-semibold text-white">{formatPesos(p.total_monto)}</span>
                                                 </div>
                                             </div>
@@ -405,18 +510,20 @@ export default function Dashboard({
                         <>
                             <div className="mb-4 flex items-center justify-between">
                                 <h2 className="flex items-center gap-2 font-bold text-white">
-                                <span className="h-[5px] w-[5px] rounded-full bg-emerald-400 flex-shrink-0" />
-                                Talleres activos
-                            </h2>
+                                    <span className="h-[5px] w-[5px] rounded-full bg-emerald-400 flex-shrink-0" />
+                                    Talleres activos
+                                </h2>
                                 {safeRoute('talleres.index') && (
-                                    <Link href={safeRoute('talleres.index')!} className="text-xs text-primary transition-colors hover:text-orange-300">
+                                    <Link href={safeRoute('talleres.index')!} className="text-xs text-green-400 transition-colors hover:text-green-300">
                                         Ver todos →
                                     </Link>
                                 )}
                             </div>
                             {talleres.length === 0 ? (
-                                <div className="py-8 text-center">
-                                    <p className="mb-2 text-3xl">🏋️</p>
+                                <div className="py-8 text-center flex flex-col items-center gap-3">
+                                    <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
+                                        <Dumbbell className="w-6 h-6 text-emerald-400/70" strokeWidth={1.5} />
+                                    </div>
                                     <p className="text-sm text-slate-500">Sin talleres activos</p>
                                 </div>
                             ) : (
@@ -426,7 +533,9 @@ export default function Dashboard({
 
                                         return (
                                             <div key={t.id} className="flex items-center gap-3">
-                                                <span className="w-7 flex-shrink-0 text-center text-lg">{getSportIcon(t.disciplina.nombre)}</span>
+                                                <div className="w-7 h-7 flex-shrink-0 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                                                    <Layers className="w-3.5 h-3.5 text-emerald-400" strokeWidth={1.75} />
+                                                </div>
                                                 <div className="min-w-0 flex-1">
                                                     <div className="mb-1 flex items-center justify-between">
                                                         <span className="truncate text-xs font-medium text-slate-200">{t.nombre}</span>
@@ -434,7 +543,7 @@ export default function Dashboard({
                                                             <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium ${NIVEL_BADGE[t.nivel] ?? 'bg-slate-700/50 text-slate-400'}`}>
                                                                 {NIVEL_LABEL[t.nivel] ?? t.nivel}
                                                             </span>
-                                                            <span className="text-[10px] text-slate-500">{t.inscriptos}/{t.cupo_maximo}</span>
+                                                            <span className="text-[10px] text-gray-400">{t.inscriptos}/{t.cupo_maximo}</span>
                                                         </div>
                                                     </div>
                                                     <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
@@ -451,21 +560,23 @@ export default function Dashboard({
                 </div>
 
                 {/* Deudas pendientes */}
-                <div className="rounded-2xl border border-green-500/10 bg-white/5 backdrop-blur-lg p-5 shadow-[0_4px_24px_rgba(0,0,0,0.40)]">
+                <div className="rounded-2xl border border-red-500/10 bg-[rgba(239,68,68,0.03)] backdrop-blur-xl p-5 shadow-lg shadow-black/40 transition-all duration-300 hover:scale-[1.02] hover:border-green-400/30 hover:shadow-[0_0_40px_rgba(74,222,128,0.15)]">
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="flex items-center gap-2 font-bold text-white">
                             <span className="h-[5px] w-[5px] rounded-full bg-danger flex-shrink-0" />
                             Deudas pendientes
                         </h2>
                         {safeRoute('alumnos.index') && (
-                            <Link href={safeRoute('alumnos.index')!} className="text-xs text-primary transition-colors hover:text-orange-300">
+                            <Link href={safeRoute('alumnos.index')!} className="text-xs text-green-400 transition-colors hover:text-green-300">
                                 Ver todos →
                             </Link>
                         )}
                     </div>
                     {alumnos_con_deuda.length === 0 ? (
-                        <div className="py-8 text-center">
-                            <p className="mb-2 text-3xl">✅</p>
+                        <div className="py-8 text-center flex flex-col items-center gap-3">
+                            <div className="w-14 h-14 rounded-2xl bg-green-500/10 shadow-lg shadow-green-500/20 flex items-center justify-center">
+                                <CheckCircle2 className="w-6 h-6 text-green-400" strokeWidth={1.5} />
+                            </div>
                             <p className="text-sm font-medium text-success">Todos al dia</p>
                         </div>
                     ) : (
