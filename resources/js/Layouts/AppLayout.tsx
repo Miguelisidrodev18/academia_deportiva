@@ -121,23 +121,24 @@ export default function AppLayout({ title, children }: Props) {
 
     const SidebarContent = () => (
         <div className="flex h-full flex-col">
-            <div className="border-b border-slate-700/60 px-4 py-5">
+            <div className="border-b border-white/[0.08] px-4 py-5">
                 <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 flex-shrink-0 rounded-xl bg-primary text-base font-bold text-white shadow-md flex items-center justify-center">
+                    <div className="h-10 w-10 flex-shrink-0 rounded-xl bg-gradient-to-br from-primary to-orange-600 text-base font-bold text-white shadow-lg flex items-center justify-center ring-2 ring-primary/30">
                         {(user?.academia?.nombre ?? 'A').charAt(0).toUpperCase()}
                     </div>
                     <div className="overflow-hidden">
-                        <p className="truncate text-sm font-semibold leading-tight text-white">
+                        <p className="truncate text-sm font-bold leading-tight text-white">
                             {user?.academia?.nombre ?? 'Mi Academia'}
                         </p>
-                        <p className="mt-0.5 truncate text-[11px] text-slate-400">
+                        <p className="mt-0.5 flex items-center gap-1.5 truncate text-[11px] text-green-400/70">
+                            <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-green-400" />
                             {rolLabel[user?.rol ?? ''] ?? user?.rol ?? 'usuario'}
                         </p>
                     </div>
                 </div>
             </div>
 
-            <nav className="flex-1 space-y-4 overflow-y-auto px-3 py-3">
+            <nav className="flex-1 space-y-4 overflow-y-auto px-3 py-4">
                 {navGroups.map((group, gi) => {
                     const visibleItems = group.items.filter(
                         (item) => !item.roles || item.roles.includes(user?.rol ?? ''),
@@ -150,7 +151,7 @@ export default function AppLayout({ title, children }: Props) {
                     return (
                         <div key={gi}>
                             {group.label && (
-                                <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-widest text-slate-500">
+                                <p className="mb-1.5 px-2 text-[10px] font-bold uppercase tracking-widest text-green-400/40">
                                     {group.label}
                                 </p>
                             )}
@@ -165,11 +166,11 @@ export default function AppLayout({ title, children }: Props) {
                                             <button
                                                 key={item.label}
                                                 onClick={() => handleDisabledClick(item.badge!)}
-                                                className="group flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] text-slate-500 transition-colors hover:bg-slate-700/50"
+                                                className="group flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-[13px] text-slate-600 transition-all duration-200 hover:bg-white/5 hover:text-slate-400"
                                             >
                                                 <item.Icon className="h-4 w-4 flex-shrink-0" />
                                                 <span className="flex-1">{item.label}</span>
-                                                <span className="rounded-full bg-slate-700 px-1.5 py-0.5 text-[10px] text-slate-400">
+                                                <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-[10px] text-slate-500">
                                                     {item.badge}
                                                 </span>
                                             </button>
@@ -181,13 +182,13 @@ export default function AppLayout({ title, children }: Props) {
                                             key={item.label}
                                             href={href}
                                             onClick={() => setSidebarOpen(false)}
-                                            className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] transition-all ${
+                                            className={`group flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[13px] transition-all duration-300 ${
                                                 isActive
-                                                    ? 'bg-primary font-medium text-white shadow-sm'
-                                                    : 'text-slate-300 hover:bg-slate-700/60 hover:text-white'
+                                                    ? 'border-l-2 border-primary bg-gradient-to-r from-primary/20 to-transparent pl-[10px] font-semibold text-white shadow-[0_0_12px_rgba(249,115,22,0.12)]'
+                                                    : 'text-slate-400 hover:bg-white/[0.06] hover:text-white'
                                             }`}
                                         >
-                                            <item.Icon className={`h-4 w-4 flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                                            <item.Icon className={`h-4 w-4 flex-shrink-0 transition-colors ${isActive ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'}`} />
                                             <span>{item.label}</span>
                                         </Link>
                                     );
@@ -198,21 +199,24 @@ export default function AppLayout({ title, children }: Props) {
                 })}
             </nav>
 
-            <div className="border-t border-slate-700/60 px-3 py-3">
-                <div className="mb-1 flex items-center gap-2.5 px-2 py-1.5">
-                    <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-slate-600 text-xs font-semibold text-white">
-                        {(user?.name ?? 'U').charAt(0).toUpperCase()}
+            <div className="border-t border-white/[0.08] px-3 py-4">
+                <div className="mb-2 flex items-center gap-2.5 rounded-xl bg-white/5 px-2.5 py-2.5">
+                    <div className="relative flex-shrink-0">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-green-600 text-xs font-bold text-white shadow-md">
+                            {(user?.name ?? 'U').charAt(0).toUpperCase()}
+                        </div>
+                        <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-green-400 ring-2 ring-[#0b2010]" />
                     </div>
                     <div className="flex-1 overflow-hidden">
-                        <p className="truncate text-xs font-medium text-white">{user?.name}</p>
-                        <p className="truncate text-[10px] text-slate-400">{user?.email}</p>
+                        <p className="truncate text-xs font-semibold text-white">{user?.name}</p>
+                        <p className="truncate text-[10px] text-slate-500">{user?.email}</p>
                     </div>
                 </div>
                 <Link
                     href={route('logout')}
                     method="post"
                     as="button"
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-slate-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-slate-500 transition-all duration-200 hover:bg-red-500/10 hover:text-red-400"
                 >
                     <ArrowLeftStartOnRectangleIcon className="h-4 w-4" />
                     <span>Cerrar sesion</span>
@@ -222,11 +226,11 @@ export default function AppLayout({ title, children }: Props) {
     );
 
     return (
-        <div className="flex h-screen overflow-hidden bg-gray-50">
+        <div className="flex h-screen overflow-hidden bg-[#070f08]">
             <title>{title ? `${title} - Academia Deportiva` : 'Academia Deportiva'}</title>
             <Toaster position="top-right" toastOptions={{ className: 'text-sm' }} />
 
-            <aside className="hidden w-60 flex-shrink-0 bg-secondary shadow-xl md:flex md:flex-col">
+            <aside className="hidden w-60 flex-shrink-0 bg-gradient-to-b from-[#0c2211] to-[#071409] border-r border-green-900/40 shadow-[2px_0_30px_rgba(20,83,45,0.22),2px_0_80px_rgba(20,83,45,0.08)] md:flex md:flex-col">
                 <SidebarContent />
             </aside>
 
@@ -236,14 +240,14 @@ export default function AppLayout({ title, children }: Props) {
                         className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm md:hidden"
                         onClick={() => setSidebarOpen(false)}
                     />
-                    <aside className="fixed inset-y-0 left-0 z-30 flex w-60 flex-col bg-secondary shadow-2xl md:hidden">
+                    <aside className="fixed inset-y-0 left-0 z-30 flex w-60 flex-col bg-gradient-to-b from-[#0c2211] to-[#071409] border-r border-green-900/40 shadow-[2px_0_30px_rgba(20,83,45,0.22)] md:hidden">
                         <SidebarContent />
                     </aside>
                 </>
             )}
 
             <div className="flex flex-1 flex-col overflow-hidden">
-                <header className="flex flex-shrink-0 items-center gap-3 bg-secondary px-4 py-3 text-white shadow-md md:hidden">
+                <header className="flex flex-shrink-0 items-center gap-3 bg-[#0c2211] px-4 py-3 text-white shadow-md md:hidden">
                     <button
                         onClick={() => setSidebarOpen(true)}
                         className="rounded-md p-1 text-white transition-colors hover:bg-slate-700"
@@ -255,7 +259,23 @@ export default function AppLayout({ title, children }: Props) {
                     </span>
                 </header>
 
-                <main className="flex-1 overflow-y-auto p-6">
+                <main
+                    className="flex-1 overflow-y-auto p-6"
+                    style={{
+                        backgroundColor: '#060e07',
+                        backgroundImage: [
+                            /* focos de estadio desde arriba */
+                            'radial-gradient(ellipse 100% 40% at 50% -3%, rgba(34,197,94,0.16) 0%, transparent 58%)',
+                            /* glows de esquina */
+                            'radial-gradient(ellipse 70% 50% at 88% 0%,   rgba(20,83,45,0.32) 0%, transparent 55%)',
+                            'radial-gradient(ellipse 50% 40% at 12% 100%, rgba(20,83,45,0.22) 0%, transparent 50%)',
+                            'radial-gradient(ellipse 35% 30% at 55% 55%,  rgba(20,83,45,0.10) 0%, transparent 45%)',
+                            /* cuadrícula de campo */
+                            'repeating-linear-gradient(90deg, transparent 0, transparent 80px, rgba(255,255,255,0.016) 80px, rgba(255,255,255,0.016) 81px)',
+                            'repeating-linear-gradient(0deg,  transparent 0, transparent 60px, rgba(255,255,255,0.010) 60px, rgba(255,255,255,0.010) 61px)',
+                        ].join(','),
+                    }}
+                >
                     {children}
                 </main>
             </div>

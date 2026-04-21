@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <!-- Gradiente esférico: luz arriba-izquierda -->
+    <radialGradient id="ballBase" cx="36%" cy="30%" r="65%">
+      <stop offset="0%"   stop-color="#ffffff"/>
+      <stop offset="55%"  stop-color="#e8e8e8"/>
+      <stop offset="100%" stop-color="#b0b0b0"/>
+    </radialGradient>
+    <!-- Sombra de borde -->
+    <radialGradient id="ballEdge" cx="50%" cy="50%" r="50%">
+      <stop offset="72%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.40)"/>
+    </radialGradient>
+    <!-- Sombra proyectada -->
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="5" dy="10" stdDeviation="10" flood-color="rgba(0,0,0,0.45)"/>
+    </filter>
+    <clipPath id="ballClip">
+      <circle cx="100" cy="100" r="93"/>
+    </clipPath>
+  </defs>
+
+  <!-- Sombra -->
+  <ellipse cx="106" cy="192" rx="62" ry="10" fill="rgba(0,0,0,0.30)"/>
+
+  <!-- Cuerpo del balón -->
+  <circle cx="100" cy="100" r="93" fill="url(#ballBase)" filter="url(#dropShadow)"/>
+  <circle cx="100" cy="100" r="93" fill="url(#ballEdge)"/>
+
+  <!-- Parches negros (pentágonos clásicos de fútbol) -->
+  <g fill="#111111" stroke="#555555" stroke-width="1.5" clip-path="url(#ballClip)">
+    <!-- Parche central superior -->
+    <polygon points="100,14  119,29  112,52  88,52  81,29"/>
+    <!-- Parche superior derecho -->
+    <polygon points="145,36  165,55  157,80  133,80  123,58"/>
+    <!-- Parche derecho inferior -->
+    <polygon points="162,112  164,140  142,158  120,148  118,122"/>
+    <!-- Parche inferior central -->
+    <polygon points="100,158  120,148  124,172  100,185  76,172  80,148"/>
+    <!-- Parche izquierdo inferior -->
+    <polygon points="38,112  82,122  80,148  58,158  36,140"/>
+    <!-- Parche superior izquierdo -->
+    <polygon points="55,36   77,58   67,80   43,80   35,55"/>
+    <!-- Parche inferior derecho medio (visible) -->
+    <polygon points="133,80  157,80  165,108  145,120  120,110"/>
+    <!-- Parche inferior izquierdo medio -->
+    <polygon points="43,80   55,110  38,120  22,108  35,80"/>
+  </g>
+
+  <!-- Reflejo de luz (specular highlight) -->
+  <ellipse cx="72" cy="58" rx="20" ry="13"
+    fill="rgba(255,255,255,0.50)"
+    transform="rotate(-35 72 58)"/>
+  <!-- Reflejo secundario más suave -->
+  <ellipse cx="58" cy="75" rx="9" ry="6"
+    fill="rgba(255,255,255,0.22)"
+    transform="rotate(-35 58 75)"/>
+</svg>
